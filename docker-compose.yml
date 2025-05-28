@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    environment:
+      - VITE_DB_HOST=db
+      - VITE_DB_PORT=5432
+      - VITE_DB_USER=postgres
+      - VITE_DB_PASSWORD=postgres
+      - VITE_DB_NAME=website
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=website
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:
