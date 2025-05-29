@@ -1,48 +1,85 @@
--- Crear tablas
-CREATE TABLE IF NOT EXISTS product_categories (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL
+-- Crear la tabla users
+CREATE TABLE IF NOT EXISTS users (
+id SERIAL PRIMARY KEY,
+username VARCHAR(50) UNIQUE NOT NULL,
+password VARCHAR(255) NOT NULL,
+name VARCHAR(255),
+email VARCHAR(100) UNIQUE NOT NULL,
+created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS products (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  logo VARCHAR(255) NOT NULL,
-  description TEXT,
-  category_id INTEGER REFERENCES product_categories(id)
-);
+-- Insertar usuarios iniciales
+\i users.sql
 
-CREATE TABLE IF NOT EXISTS social_media (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(50) NOT NULL,
-  url VARCHAR(255) NOT NULL,
-  icon VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS phone_numbers (
-  id SERIAL PRIMARY KEY,
-  number VARCHAR(20) NOT NULL,
-  label VARCHAR(50)
-);
-
+-- Crear la tabla business_hours
 CREATE TABLE IF NOT EXISTS business_hours (
-  id SERIAL PRIMARY KEY,
-  days VARCHAR(100) NOT NULL,
-  hours VARCHAR(100) NOT NULL
+id VARCHAR(255) PRIMARY KEY,
+days VARCHAR(255),
+hours VARCHAR(255)
 );
 
--- Insertar datos iniciales
-INSERT INTO product_categories (name) VALUES
-  ('Sin categoría'),
-  ('Categoría 1'),
-  ('Categoría 2')
-ON CONFLICT DO NOTHING;
+-- Insertar datos de business_hours
+\i business_hours.sql
 
-INSERT INTO social_media (name, url, icon) VALUES
-  ('Facebook', 'https://facebook.com/tuempresa', 'facebook'),
-  ('Instagram', 'https://instagram.com/tuempresa', 'instagram')
-ON CONFLICT DO NOTHING;
+-- Crear la tabla contact_info
+CREATE TABLE IF NOT EXISTS contact_info (
+id VARCHAR(255) PRIMARY KEY,
+icon VARCHAR(255),
+text VARCHAR(255),
+show_on_mobile BOOLEAN
+);
 
-INSERT INTO business_hours (days, hours) VALUES
-  ('Lunes a Viernes', '9:00 - 18:00')
-ON CONFLICT DO NOTHING;
+-- Insertar datos de contact_info
+\i contact_info.sql
+
+-- Crear la tabla banner_slides
+CREATE TABLE IF NOT EXISTS banner_slides (
+id VARCHAR(255) PRIMARY KEY,
+image VARCHAR(255),
+title VARCHAR(255),
+subtitle VARCHAR(255)
+);
+
+-- Insertar datos de banner_slides
+\i banner_slides.sql
+
+-- Crear la tabla timeline_events
+CREATE TABLE IF NOT EXISTS timeline_events (
+id VARCHAR(255) PRIMARY KEY,
+year VARCHAR(255),
+title VARCHAR(255),
+description TEXT
+);
+
+-- Insertar datos de timeline_events
+\i timeline_events.sql
+
+-- Crear la tabla product_categories
+CREATE TABLE IF NOT EXISTS product_categories (
+id VARCHAR(255) PRIMARY KEY,
+name VARCHAR(255)
+);
+
+-- Insertar datos de product_categories
+\i product_categories.sql
+
+-- Crear la tabla social_media
+CREATE TABLE IF NOT EXISTS social_media (
+id VARCHAR(255) PRIMARY KEY,
+name VARCHAR(255),
+icon VARCHAR(255),
+url VARCHAR(255)
+);
+
+-- Insertar datos de social_media
+\i social_media.sql
+
+-- Crear la tabla phone_numbers
+CREATE TABLE IF NOT EXISTS phone_numbers (
+id VARCHAR(255) PRIMARY KEY,
+number VARCHAR(255),
+label VARCHAR(255)
+);
+
+-- Insertar datos de phone_numbers
+\i phone_numbers.sql

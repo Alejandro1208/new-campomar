@@ -1,51 +1,52 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile
+        context: .
+        dockerfile: Dockerfile
     ports:
-      - "80:80"
+        - "80:80"
     depends_on:
-      - backend
+        - backend
 
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+        context: .
+        dockerfile: Dockerfile.backend
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=website
-      - PORT=3001
+        - DB_HOST=db
+        - DB_PORT=5432
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+        - DB_NAME=website
+        - PORT=3001
     ports:
-      - "3001:3001"
+        - "3001:3001"
     depends_on:
-      - db
+        - db
 
   db:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=website
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=website
     ports:
-      - "5432:5432"
+        - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./src/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - postgres_data:/var/lib/postgresql/data
+        - ./src/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@example.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
+        - PGADMIN_DEFAULT_EMAIL=admin@example.com
+        - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
-      - "8080:80"
+        - "8080:80"
     depends_on:
-      - db
+        - db
 
 volumes:
   postgres_data:

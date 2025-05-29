@@ -90,7 +90,7 @@ export interface WebsiteData {
   products: Product[];
   socialMedia: SocialMedia[];
   phoneNumbers: PhoneNumber[];
-  businessHours: BusinessHours;
+  businessHours: BusinessHours[];
   mapLocation: MapLocation;
   logo: string;
 }
