@@ -1,20 +1,30 @@
 version: '3.8'
 
 services:
-  app:
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:
-      - db
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
     environment:
-      - VITE_DB_HOST=db
-      - VITE_DB_PORT=5432
-      - VITE_DB_USER=postgres
-      - VITE_DB_PASSWORD=postgres
-      - VITE_DB_NAME=website
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=website
+      - PORT=3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
 
   db:
     image: postgres:15-alpine
@@ -27,6 +37,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./src/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
 
 volumes:
   postgres_data:

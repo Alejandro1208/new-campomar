@@ -6,7 +6,7 @@
       "forceConsistentCasingInFileNames": true,
       "strict": true,
       "skipLibCheck": true,
-      "outDir": "dist", // Directorio donde se guardarán los archivos JavaScript compilados
+      "outDir": "dist-backend", // Directorio donde se guardarán los archivos JavaScript compilados
       "moduleResolution": "node", // O "node16" o "nodenext" si estás usando módulos ES en Node.js
       "sourceMap": true // Opcional: para facilitar la depuración
     },
