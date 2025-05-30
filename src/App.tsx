@@ -27,6 +27,7 @@ function App() {
   const loadInitialData = useWebsiteStore(state => state.loadInitialData);
 
   useEffect(() => {
+    console.log("App.tsx: useEffect se disparó. Intentando llamar a loadInitialData."); 
     loadInitialData();
   }, [loadInitialData]); // Añadir loadInitialData como dependencia
 

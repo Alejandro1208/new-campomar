@@ -70,6 +70,11 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         databaseService.getCompanyInfo(),
         databaseService.getTimelineEvents()
       ]);
+
+      console.log('Datos recibidos de las APIs antes de setear en el store:', {
+        products, categories, social, phones, hours,
+        bannerSlides, menuItems, companyInfo, timelineEvents
+      });
   
       set({
         products,
@@ -79,11 +84,11 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         businessHours: hours ? [hours] : [], // Aseguramos que sea un array
         bannerSlides,
         menuItems,
-        companyInfo,
+        companyInfo: companyInfo ? { ...companyInfo, images: companyInfo.images || [] } : { title: '', description: '', images: [] },
         timelineEvents
       });
     } catch (error) {
-      console.error('Error loading initial data:', error);
+      console.error('Error en loadInitialData del store:', error);
     }
   },
   
@@ -199,15 +204,4 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
       console.error('Error updating social media:', error);
     }
   },
-  // Eliminar este método ya que es redundante y no está en la interfaz
-  /*
-  fetchProducts: async () => {
-    try {
-      const response = await api.getProducts();
-      set({ products: response.data });
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  },
-  */
 }));
