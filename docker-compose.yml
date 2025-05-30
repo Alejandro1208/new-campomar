@@ -19,7 +19,7 @@ services:
         - DB_PORT=5432
         - DB_USER=postgres
         - DB_PASSWORD=postgres
-        - DB_NAME=website
+        - DB_NAME=website_db
         - PORT=3001
     ports:
         - "3001:3001"
@@ -31,12 +31,12 @@ services:
     environment:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
-        - POSTGRES_DB=website
+        - POSTGRES_DB=website_db
     ports:
         - "5432:5432"
     volumes:
         - postgres_data:/var/lib/postgresql/data
-        - ./src/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./src/config:/docker-entrypoint-initdb.d # Monta todo el directorio
 
   pgadmin:
     image: dpage/pgadmin4

@@ -1,3 +1,11 @@
+CREATE TABLE IF NOT EXISTS products (
+  id VARCHAR(255) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  logo VARCHAR(255),
+  category_id VARCHAR(255) REFERENCES product_categories(id) -- Asegúrate que product_categories.sql se ejecute ANTES
+);
+
 INSERT INTO products (id, name, description, logo, category_id) VALUES
 ('1', 'Producto 1', 'Descripción del Producto 1', 'https://via.placeholder.com/150x150.png?text=Logo+1', '2'),
 ('2', 'Producto 2', 'Descripción del Producto 2', 'https://via.placeholder.com/150x150.png?text=Logo+2', '2'),
