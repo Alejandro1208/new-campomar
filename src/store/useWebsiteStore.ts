@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+// Eliminar esta importación ya que no se usa
+// import { api } from '../services/api';
 import { WebsiteData, ContactInfo, BannerSlide, MenuItem, TimelineEvent, Product, ProductCategory, PhoneNumber, SocialMedia, BusinessHours } from '../types';
 import { databaseService } from '../services/databaseService';
 
@@ -41,26 +43,44 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
   products: [],
   socialMedia: [],
   phoneNumbers: [],
-  businessHours: { id: '1', days: '', hours: '' },
+  businessHours: [],
   mapLocation: { embedUrl: '' },
   logo: '',
   // Data Loading
   loadInitialData: async () => {
     try {
-      const [products, categories, social, phones, hours] = await Promise.all([
+      const [
+        products,
+        categories,
+        social,
+        phones,
+        hours,
+        bannerSlides,
+        menuItems,
+        companyInfo,
+        timelineEvents
+      ] = await Promise.all([
         databaseService.getProducts(),
         databaseService.getProductCategories(),
         databaseService.getSocialMedia(),
         databaseService.getPhoneNumbers(),
-        databaseService.getBusinessHours()
+        databaseService.getBusinessHours(),
+        databaseService.getBannerSlides(),
+        databaseService.getMenuItems(),
+        databaseService.getCompanyInfo(),
+        databaseService.getTimelineEvents()
       ]);
-
+  
       set({
         products,
         productCategories: categories,
         socialMedia: social,
         phoneNumbers: phones,
-        businessHours: hours || { id: '1', days: 'Lunes a Viernes', hours: '9:00 - 18:00' }
+        businessHours: hours ? [hours] : [], // Aseguramos que sea un array
+        bannerSlides,
+        menuItems,
+        companyInfo,
+        timelineEvents
       });
     } catch (error) {
       console.error('Error loading initial data:', error);
@@ -162,7 +182,7 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
   updateBusinessHours: async (hours) => {
     try {
       const updatedHours = await databaseService.updateBusinessHours(hours);
-      set({ businessHours: updatedHours });
+      set({ businessHours: [updatedHours] });
     } catch (error) {
       console.error('Error updating business hours:', error);
     }
@@ -179,4 +199,15 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
       console.error('Error updating social media:', error);
     }
   },
+  // Eliminar este método ya que es redundante y no está en la interfaz
+  /*
+  fetchProducts: async () => {
+    try {
+      const response = await api.getProducts();
+      set({ products: response.data });
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  },
+  */
 }));

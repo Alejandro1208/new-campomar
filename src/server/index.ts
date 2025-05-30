@@ -190,6 +190,60 @@ app.put('/api/business-hours/:id', async (req, res) => {
   }
 });
 
+// Banner Slides
+app.get('/api/banner-slides', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM banner_slides');
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching banner slides' });
+  }
+});
+
+// Menu Items
+app.get('/api/menu-items', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM menu_items');
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching menu items' });
+  }
+});
+
+// Company Info
+app.get('/api/company-info', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM company_info');
+    res.json(result.rows[0]); // Asumiendo que solo hay una fila de información de la empresa
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching company info' });
+  }
+});
+
+// Timeline Events
+app.get('/api/timeline-events', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM timeline_events ORDER BY year ASC');
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching timeline events' });
+  }
+});
+
+app.put('/api/business-hours/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { days, hours } = req.body;
+    const result = await pool.query(
+      'UPDATE business_hours SET days = $1, hours = $2 WHERE id = $3 RETURNING *',
+      [days, hours, id]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating business hours' });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

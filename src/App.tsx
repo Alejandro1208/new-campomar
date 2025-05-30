@@ -14,6 +14,8 @@ import EditLocation from './components/admin/EditLocation';
 import EditContact from './components/admin/EditContact';
 import EditSettings from './components/admin/EditSettings';
 import { useAuthStore } from './store/useAuthStore';
+import { useEffect } from 'react';
+import { useWebsiteStore } from './store/useWebsiteStore';
 
 // Componente de Ruta Protegida
 const ProtectedRoute: React.FC<{ element: React.ReactNode }> = ({ element }) => {
@@ -22,6 +24,12 @@ const ProtectedRoute: React.FC<{ element: React.ReactNode }> = ({ element }) => 
 };
 
 function App() {
+  const loadInitialData = useWebsiteStore(state => state.loadInitialData);
+
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]); // Añadir loadInitialData como dependencia
+
   return (
     <Router>
       <Routes>

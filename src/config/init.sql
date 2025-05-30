@@ -83,3 +83,15 @@ label VARCHAR(255)
 
 -- Insertar datos de phone_numbers
 \i phone_numbers.sql
+
+-- Crear la tabla products
+CREATE TABLE IF NOT EXISTS products (
+id VARCHAR(255) PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+description TEXT,
+logo VARCHAR(255),
+category_id VARCHAR(255) REFERENCES product_categories(id)
+);
+
+-- Insertar datos de products
+\i products.sql
