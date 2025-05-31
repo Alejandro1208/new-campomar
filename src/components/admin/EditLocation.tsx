@@ -7,10 +7,28 @@ const EditLocation: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUrl, setEditedUrl] = useState(mapLocation.embedUrl);
 
-  const handleSave = () => {
-    updateMapLocation(editedUrl);
-    setIsEditing(false);
-  };
+const handleSave = async () => { // <--- Hacemos handleSave async para poder usar await
+  // ---> AÑADE ESTOS LOGS AQUÍ <---
+  console.log('En EditLocation.tsx, dentro de handleSave.');
+  console.log('Valor de updateMapLocation en el componente:', updateMapLocation);
+  console.log('Tipo de updateMapLocation en el componente:', typeof updateMapLocation);
+  console.log('URL a guardar (editedUrl):', editedUrl);
+
+  if (typeof updateMapLocation === 'function') {
+    try {
+      await updateMapLocation(editedUrl); // Llama a la acción del store
+      setIsEditing(false);
+      alert('URL del mapa actualizada!'); // Feedback opcional para el usuario
+    } catch (error) {
+      console.error("Error al intentar actualizar la URL del mapa desde EditLocation:", error);
+      alert("Error al guardar la URL. Revisa la consola.");
+    }
+  } else {
+    console.error("Error Crítico: updateMapLocation es undefined o no es una función en EditLocation.tsx");
+    alert("Error: La función de actualización no está disponible en el store.");
+  }
+};
+
 
   return (
     <div className="p-6">

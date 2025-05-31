@@ -72,6 +72,16 @@ export interface MapLocation {
   embedUrl: string;
 }
 
+export interface SiteSettingsResponse {
+  mapLocation: MapLocation;
+  logo: string; 
+}
+
+export interface SiteSettingsPayload {
+  mapLocation?: MapLocation;
+  logo?: string;
+}
+
 export interface User {
   id: string;
   username: string;

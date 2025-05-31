@@ -28,6 +28,7 @@ interface WebsiteStore extends WebsiteData {
   updateSocialMedia: (id: string, socialMedia: SocialMedia) => Promise<void>;
 
   updateCompanyInfo: (data: Partial<CompanyInfo>) => Promise<void>; 
+  
 }
 
 export const useWebsiteStore = create<WebsiteStore>((set) => ({
@@ -60,7 +61,8 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         bannerSlides,
         menuItems,
         companyInfo,
-        timelineEvents
+        timelineEvents,
+        siteSettings
       ] = await Promise.all([
         databaseService.getProducts(),
         databaseService.getProductCategories(),
@@ -70,12 +72,13 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         databaseService.getBannerSlides(),
         databaseService.getMenuItems(),
         databaseService.getCompanyInfo(),
-        databaseService.getTimelineEvents()
+        databaseService.getTimelineEvents(),
+        databaseService.getSiteSettings()
       ]);
 
       console.log('Datos recibidos de las APIs antes de setear en el store:', {
         products, categories, social, phones, hours,
-        bannerSlides, menuItems, companyInfo, timelineEvents
+        bannerSlides, menuItems, companyInfo, timelineEvents, siteSettings 
       });
   
       set({
@@ -87,10 +90,17 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         bannerSlides,
         menuItems,
         companyInfo: companyInfo ? { ...companyInfo, images: companyInfo.images || [] } : { title: '', description: '', images: [] },
-        timelineEvents
+        timelineEvents,
+        mapLocation: siteSettings.mapLocation, // <--- ACTUALIZA EL ESTADO
+        logo: siteSettings.logo 
       });
     } catch (error) {
       console.error('Error en loadInitialData del store:', error);
+
+      set({
+        mapLocation: { embedUrl: '' },
+        logo: ''
+      });
     }
   },
   

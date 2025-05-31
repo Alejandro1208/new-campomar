@@ -7,7 +7,8 @@ import {
   BannerSlide,
   MenuItem,
   CompanyInfo,
-  TimelineEvent 
+  TimelineEvent,
+  MapLocation
 } from '../types';
 
 const API_URL = 'http://localhost:3001/api';
@@ -18,13 +19,25 @@ interface UploadedImageResponse {
   publicUrl: string;
 }
 
+interface SiteSettingsPayload {
+    mapLocation?: MapLocation; // mapLocation es un objeto { embedUrl: string }
+    logo?: string;
+}
+
+
 interface UploadedFileResponse { 
   message: string;
   filePath: string;
   publicUrl: string;
 }
 
+interface SiteSettingsResponse {
+  mapLocation: MapLocation;
+  logo: string; 
+}
+
 export const databaseService = {
+
   // Productos
   async getProducts(): Promise<Product[]> {
     const response = await fetch(`${API_URL}/products`);
@@ -225,6 +238,17 @@ export const databaseService = {
     }
     return response.json();
   },
+
+    async getSiteSettings(): Promise<SiteSettingsResponse> {
+    const response = await fetch(`${API_URL}/site-settings`);
+    if (!response.ok) {
+      console.warn('Error fetching site settings, returning defaults.');
+      // Devuelve valores por defecto para que el store no falle completamente
+      return { mapLocation: { embedUrl: '' }, logo: '' }; 
+    }
+    return response.json();
+  },
+  
 
 };
 

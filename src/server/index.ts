@@ -5,6 +5,7 @@ const { Pool } = pkg;
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 app.use(cors());
@@ -250,18 +251,23 @@ app.get(
     })
 );
 
-app.post(
-    "/api/products",
-    handleAsync(async (req, res) => {
-        const { name, description, category_id, logo } = req.body; // Corregido: image_url -> logo
-        // Aquí deberías añadir validación para los datos de entrada
-        const result = await pool.query(
-            "INSERT INTO products (name, description, category_id, logo) VALUES ($1, $2, $3, $4) RETURNING *",
-            [name, description, category_id, logo]
-        );
-        res.status(201).json(result.rows[0]);
-    })
-);
+app.post("/api/products", handleAsync(async (req: Request, res: Response) => {
+    const { name, description, category_id, logo } = req.body;
+    const newId = uuidv4(); // <--- 2. Genera un nuevo ID único
+
+    // Aquí deberías añadir validación para los datos de entrada, por ejemplo:
+    if (!name || !category_id) { // Asumiendo que name y category_id son obligatorios
+        return res.status(400).json({ error: 'Nombre y ID de categoría son obligatorios.' });
+    }
+
+    const result = await pool.query(
+        // <--- 3. Añade 'id' a la lista de columnas y $5 a los valores
+        "INSERT INTO products (id, name, description, category_id, logo) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        // <--- 4. Pasa newId como el primer valor
+        [newId, name, description, category_id, logo]
+    );
+    res.status(201).json(result.rows[0]);
+}));
 
 app.put(
     "/api/products/:id",
