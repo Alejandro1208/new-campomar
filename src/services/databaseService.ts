@@ -12,6 +12,18 @@ import {
 
 const API_URL = 'http://localhost:3001/api';
 
+interface UploadedImageResponse {
+  message: string;
+  filePath: string; 
+  publicUrl: string;
+}
+
+interface UploadedFileResponse { 
+  message: string;
+  filePath: string;
+  publicUrl: string;
+}
+
 export const databaseService = {
   // Productos
   async getProducts(): Promise<Product[]> {
@@ -159,5 +171,60 @@ export const databaseService = {
     const response = await fetch(`${API_URL}/timeline-events`);
     if (!response.ok) throw new Error('Error fetching timeline events');
     return response.json();
-  }
+  },
+
+  async updateCompanyInfo(data: Partial<CompanyInfo>): Promise<CompanyInfo> {
+    const response = await fetch(`${API_URL}/company-info`, { // API_URL debe estar definido en este archivo
+      method: 'PUT', // O 'PATCH', según cómo diseñes tu API de backend
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      // Podrías querer leer el cuerpo del error si el backend lo envía
+      // const errorData = await response.json().catch(() => ({ message: 'Error updating company info' }));
+      // throw new Error(errorData.message || 'Error updating company info');
+      throw new Error('Error updating company info');
+    }
+    return response.json();
+  },
+
+  async uploadCompanyImageFile(file: File): Promise<UploadedImageResponse> {
+    const formData = new FormData();
+    formData.append('companyImage', file); // 'companyImage' debe coincidir con el nombre esperado por multer.single() en el backend
+
+    const response = await fetch(`${API_URL}/upload/company-image`, {
+      method: 'POST',
+      body: formData,
+      // NO establezcas el header 'Content-Type' manualmente cuando uses FormData con fetch,
+      // el navegador lo hará automáticamente con el boundary correcto.
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al subir la imagen.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+
+    // --> FUNCIÓN PARA SUBIR LOGOS DE PRODUCTOS <--
+  async uploadProductLogoFile(file: File): Promise<UploadedFileResponse> {
+    const formData = new FormData();
+    formData.append('productLogo', file); // 'productLogo' debe coincidir con multer.single() en el backend
+
+    const response = await fetch(`${API_URL}/upload/product-logo`, { // Nuevo endpoint
+      method: 'POST',
+      body: formData,
+      // El navegador establece el Content-Type automáticamente para FormData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al subir el logo del producto.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+
 };
+

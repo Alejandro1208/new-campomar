@@ -46,7 +46,7 @@ export interface Product {
   name: string;
   logo: string;
   description: string;
-  categoryId: string;
+  category_id: string;
 }
 
 export interface SocialMedia {
@@ -100,4 +100,16 @@ export interface AuthState {
   isAuthenticated: boolean;
   login: (username: string, password: string) => boolean;
   logout: () => void;
+}
+export interface Image { // <--- AÑADE ESTA INTERFAZ Y EXPÓRTALA
+  id: string;
+  src: string;
+  alt: string;
+}
+
+export interface CompanyInfo {
+  id?: string;
+  title: string;
+  description: string;
+  images: Image[]; // <--- USA EL TIPO Image AQUÍ
 }

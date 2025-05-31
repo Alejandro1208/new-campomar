@@ -151,7 +151,7 @@ export const initialWebsiteData: WebsiteData = {
     name: `Producto ${i + 1}`,
     logo: `https://via.placeholder.com/150x150.png?text=Logo+${i + 1}`,
     description: `Descripción del Producto ${i + 1}`,
-    categoryId: `${(i % 7) + 2}`,
+    category_id: `${(i % 7) + 2}`,
   })),
   socialMedia: [
     {

@@ -7,7 +7,7 @@ const Products: React.FC = () => {
 
   const filteredProducts = activeCategory === '1' 
     ? products 
-    : products.filter(product => product.categoryId === activeCategory);
+    : products.filter(product => product.category_id === activeCategory);
 
   return (
     <section id="products" className="py-16 bg-white">
@@ -39,7 +39,7 @@ const Products: React.FC = () => {
               className="bg-white rounded-2xl shadow-custom hover:shadow-hover transition-all duration-300 p-4 flex flex-col items-center text-center"
             >
               <img 
-                src={product.logo} 
+                src={`http://localhost:3001${product.logo}`} 
                 alt={product.name} 
                 className="w-20 h-20 object-contain mb-4"
               />

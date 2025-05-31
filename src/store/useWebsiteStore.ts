@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 // Eliminar esta importación ya que no se usa
 // import { api } from '../services/api';
-import { WebsiteData, ContactInfo, BannerSlide, MenuItem, TimelineEvent, Product, ProductCategory, PhoneNumber, SocialMedia, BusinessHours } from '../types';
+import { WebsiteData, ContactInfo, BannerSlide, MenuItem, TimelineEvent, Product, ProductCategory, PhoneNumber, SocialMedia, BusinessHours, CompanyInfo } from '../types';
 import { databaseService } from '../services/databaseService';
 
 interface WebsiteStore extends WebsiteData {
@@ -26,6 +26,8 @@ interface WebsiteStore extends WebsiteData {
   deletePhoneNumber: (id: string) => Promise<void>;
   updateBusinessHours: (hours: BusinessHours) => Promise<void>;
   updateSocialMedia: (id: string, socialMedia: SocialMedia) => Promise<void>;
+
+  updateCompanyInfo: (data: Partial<CompanyInfo>) => Promise<void>; 
 }
 
 export const useWebsiteStore = create<WebsiteStore>((set) => ({
@@ -204,4 +206,23 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
       console.error('Error updating social media:', error);
     }
   },
+  updateCompanyInfo: async (data: Partial<CompanyInfo>) => {
+    try {
+      // Llama al servicio para actualizar en el backend
+      const updatedCompanyInfoFromDB = await databaseService.updateCompanyInfo(data);
+      // Actualiza el estado en el store, asegurando que 'images' sea un array
+      set({ 
+        companyInfo: { 
+          ...updatedCompanyInfoFromDB, 
+          images: updatedCompanyInfoFromDB.images || [] 
+        } 
+      });
+    } catch (error) {
+      console.log('Tipo de databaseService.updateCompanyInfo:', typeof databaseService.updateCompanyInfo); 
+      console.error('Error updating company info in store:', error);
+      // Aquí podrías querer re-lanzar el error o manejarlo para mostrar un mensaje al usuario
+    }
+  },
+
+  
 }));

@@ -19,7 +19,7 @@ const Company: React.FC = () => {
               {companyInfo.images.map((image) => (
                 <div key={image.id} className="overflow-hidden rounded-2xl shadow-custom hover:shadow-hover transition-shadow duration-300">
                   <img 
-                    src={image.src} 
+                    src={`http://localhost:3001${image.src}`}
                     alt={image.alt} 
                     className="w-full h-64 object-cover transform hover:scale-105 transition-transform duration-300"
                   />
