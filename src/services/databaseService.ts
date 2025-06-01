@@ -1,31 +1,30 @@
-import { 
-  Product, 
-  ProductCategory, 
-  SocialMedia, 
-  PhoneNumber, 
+import {
+  Product,
+  ProductCategory,
+  SocialMedia,
+  PhoneNumber,
   BusinessHours,
   BannerSlide,
   MenuItem,
   CompanyInfo,
   TimelineEvent,
-  MapLocation
+  MapLocation,
+  SiteSettingsPayload,
+  ContactInfo  // <--- Importa desde ../types
 } from '../types';
 
 const API_URL = 'http://localhost:3001/api';
 
 interface UploadedImageResponse {
   message: string;
-  filePath: string; 
+  filePath: string;
   publicUrl: string;
 }
 
-interface SiteSettingsPayload {
-    mapLocation?: MapLocation; // mapLocation es un objeto { embedUrl: string }
-    logo?: string;
-}
 
 
-interface UploadedFileResponse { 
+
+interface UploadedFileResponse {
   message: string;
   filePath: string;
   publicUrl: string;
@@ -33,7 +32,7 @@ interface UploadedFileResponse {
 
 interface SiteSettingsResponse {
   mapLocation: MapLocation;
-  logo: string; 
+  logo: string;
 }
 
 export const databaseService = {
@@ -221,7 +220,7 @@ export const databaseService = {
     return response.json();
   },
 
-    // --> FUNCIÓN PARA SUBIR LOGOS DE PRODUCTOS <--
+  // --> FUNCIÓN PARA SUBIR LOGOS DE PRODUCTOS <--
   async uploadProductLogoFile(file: File): Promise<UploadedFileResponse> {
     const formData = new FormData();
     formData.append('productLogo', file); // 'productLogo' debe coincidir con multer.single() en el backend
@@ -239,16 +238,74 @@ export const databaseService = {
     return response.json();
   },
 
-    async getSiteSettings(): Promise<SiteSettingsResponse> {
+  async getSiteSettings(): Promise<SiteSettingsResponse> {
     const response = await fetch(`${API_URL}/site-settings`);
     if (!response.ok) {
       console.warn('Error fetching site settings, returning defaults.');
       // Devuelve valores por defecto para que el store no falle completamente
-      return { mapLocation: { embedUrl: '' }, logo: '' }; 
+      return { mapLocation: { embedUrl: '' }, logo: '' };
     }
     return response.json();
   },
-  
+
+  async updateSiteSettings(data: SiteSettingsPayload): Promise<SiteSettingsResponse> {
+    const response = await fetch(`${API_URL}/site-settings`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al actualizar la configuración del sitio.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+    async getContactInfo(): Promise<ContactInfo[]> {
+    const response = await fetch(`${API_URL}/contact-info`);
+    if (!response.ok) {
+      console.error('Error fetching contact info, returning empty array.');
+      return []; // Devolver array vacío en caso de error para no romper el store
+    }
+    return response.json();
+  },
+  async  addContactInfoItem(itemData: Omit<ContactInfo, 'id'>): Promise<ContactInfo> {
+  const response = await fetch(`${API_URL}/contact-info`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(itemData),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: 'Error al agregar el ítem de contacto.' }));
+    throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+  }
+  return response.json();
+},
+
+async updateContactInfoItem(id: string, itemData: Partial<ContactInfo>): Promise<ContactInfo> {
+  const response = await fetch(`${API_URL}/contact-info/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(itemData),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: 'Error al actualizar el ítem de contacto.' }));
+    throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+  }
+  return response.json();
+},
+
+async deleteContactInfoItem(id: string): Promise<void> {
+  const response = await fetch(`${API_URL}/contact-info/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: 'Error al eliminar el ítem de contacto.' }));
+    throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+  }
+  // DELETE usualmente no devuelve contenido, o devuelve un mensaje de éxito que no necesitamos procesar aquí.
+}
 
 };
 

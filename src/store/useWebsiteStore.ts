@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 // Eliminar esta importación ya que no se usa
 // import { api } from '../services/api';
-import { WebsiteData, ContactInfo, BannerSlide, MenuItem, TimelineEvent, Product, ProductCategory, PhoneNumber, SocialMedia, BusinessHours, CompanyInfo } from '../types';
-import { databaseService } from '../services/databaseService';
+import { WebsiteData, ContactInfo, BannerSlide, MenuItem, TimelineEvent, Product, ProductCategory, PhoneNumber, SocialMedia, BusinessHours, CompanyInfo, SiteSettingsPayload } from '../types';
+import { databaseService,} from '../services/databaseService';
 
 interface WebsiteStore extends WebsiteData {
   // Data Loading
@@ -28,6 +28,13 @@ interface WebsiteStore extends WebsiteData {
   updateSocialMedia: (id: string, socialMedia: SocialMedia) => Promise<void>;
 
   updateCompanyInfo: (data: Partial<CompanyInfo>) => Promise<void>; 
+  updateMapLocation: (newEmbedUrl: string) => Promise<void>; 
+
+  addContactInfoItem: (itemData: Omit<ContactInfo, 'id'>) => Promise<void>;
+  updateContactInfoItem: (id: string, itemData: Partial<ContactInfo>) => Promise<void>;
+  deleteContactInfoItem: (id: string) => Promise<void>;
+
+
   
 }
 
@@ -62,7 +69,8 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         menuItems,
         companyInfo,
         timelineEvents,
-        siteSettings
+        siteSettings,
+        contactInfoData,
       ] = await Promise.all([
         databaseService.getProducts(),
         databaseService.getProductCategories(),
@@ -73,12 +81,13 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         databaseService.getMenuItems(),
         databaseService.getCompanyInfo(),
         databaseService.getTimelineEvents(),
-        databaseService.getSiteSettings()
+        databaseService.getSiteSettings(),
+        databaseService.getContactInfo()
       ]);
 
       console.log('Datos recibidos de las APIs antes de setear en el store:', {
         products, categories, social, phones, hours,
-        bannerSlides, menuItems, companyInfo, timelineEvents, siteSettings 
+        bannerSlides, menuItems, companyInfo, timelineEvents, siteSettings, contactInfoData 
       });
   
       set({
@@ -92,12 +101,14 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
         companyInfo: companyInfo ? { ...companyInfo, images: companyInfo.images || [] } : { title: '', description: '', images: [] },
         timelineEvents,
         mapLocation: siteSettings.mapLocation, // <--- ACTUALIZA EL ESTADO
-        logo: siteSettings.logo 
+        logo: siteSettings.logo,
+        contactInfo: contactInfoData
       });
     } catch (error) {
       console.error('Error en loadInitialData del store:', error);
 
       set({
+        contactInfo: [],
         mapLocation: { embedUrl: '' },
         logo: ''
       });
@@ -231,6 +242,56 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
       console.log('Tipo de databaseService.updateCompanyInfo:', typeof databaseService.updateCompanyInfo); 
       console.error('Error updating company info in store:', error);
       // Aquí podrías querer re-lanzar el error o manejarlo para mostrar un mensaje al usuario
+    }
+  },
+
+    updateMapLocation: async (newEmbedUrl: string) => {
+    try {
+      const payload: SiteSettingsPayload = { mapLocation: { embedUrl: newEmbedUrl } };
+      // Llama a la función de servicio que actualiza site-settings
+      const updatedSiteSettings = await databaseService.updateSiteSettings(payload);
+      // Actualiza solo mapLocation en el store con la respuesta del backend.
+      set({ mapLocation: updatedSiteSettings.mapLocation }); 
+      // Si también quisieras actualizar el logo general del sitio a través de esta acción, 
+      // podrías añadir: logo: updatedSiteSettings.logo
+    } catch (error) {
+      console.error('Error updating map location in store:', error);
+      throw error; // Re-lanzar el error para que el componente EditLocation pueda manejarlo
+    }
+  },
+   addContactInfoItem: async (itemData) => {
+    try {
+      const newItem = await databaseService.addContactInfoItem(itemData);
+      set((state) => ({ contactInfo: [...state.contactInfo, newItem] }));
+    } catch (error) {
+      console.error("Error adding contact info item to store:", error);
+      throw error; // Re-lanzar para que el componente lo maneje
+    }
+  },
+
+  updateContactInfoItem: async (id, itemData) => {
+    try {
+      const updatedItem = await databaseService.updateContactInfoItem(id, itemData);
+      set((state) => ({
+        contactInfo: state.contactInfo.map((item) =>
+          item.id === id ? { ...item, ...updatedItem } : item 
+        ),
+      }));
+    } catch (error) {
+      console.error("Error updating contact info item in store:", error);
+      throw error;
+    }
+  },
+
+  deleteContactInfoItem: async (id) => {
+    try {
+      await databaseService.deleteContactInfoItem(id);
+      set((state) => ({
+        contactInfo: state.contactInfo.filter((item) => item.id !== id),
+      }));
+    } catch (error) {
+      console.error("Error deleting contact info item from store:", error);
+      throw error;
     }
   },
 

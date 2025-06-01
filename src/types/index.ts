@@ -68,6 +68,11 @@ export interface BusinessHours {
   hours: string;
 }
 
+export interface SiteSettingsPayload { // <--- Añade 'export'
+  mapLocation?: MapLocation;
+  logo?: string;
+}
+
 export interface MapLocation {
   embedUrl: string;
 }
