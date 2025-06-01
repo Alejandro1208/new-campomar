@@ -12,6 +12,7 @@
   "lint": "eslint .",
   "dependencies": {
     "@types/pg": "^8.15.2",
+    "@types/react-scroll": "^1.8.10",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -22,6 +23,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.22.0",
+    "react-scroll": "^1.9.3",
     "react-transition-group": "^4.4.5",
     "sequelize": "^6.37.7",
     "swiper": "^11.0.5",

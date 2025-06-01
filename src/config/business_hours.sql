@@ -6,5 +6,4 @@ hours VARCHAR(255)
 
 INSERT INTO business_hours (id, days, hours) VALUES
 ('1', 'Lun-Vie', '9:00-18:00'),
-('2', 'Sáb', '10:00-14:00'),
-('3', 'Dom', 'Cerrado');
+

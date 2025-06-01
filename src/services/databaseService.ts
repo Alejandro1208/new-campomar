@@ -11,6 +11,7 @@ import {
   MapLocation,
   SiteSettingsPayload,
   ContactInfo,
+  SiteSettingsResponse
 } from '../types';
 
 const API_URL = 'http://localhost:3001/api';
@@ -30,10 +31,6 @@ interface UploadedFileResponse {
   publicUrl: string;
 }
 
-interface SiteSettingsResponse {
-  mapLocation: MapLocation;
-  logo: string;
-}
 
 export const databaseService = {
 
@@ -141,10 +138,10 @@ export const databaseService = {
   },
 
   // Horario de Atención
-  async getBusinessHours(): Promise<BusinessHours> {
+  async getBusinessHours(): Promise<BusinessHours[]> { // <--- CAMBIO AQUÍ
     const response = await fetch(`${API_URL}/business-hours`);
     if (!response.ok) throw new Error('Error fetching business hours');
-    return response.json();
+    return response.json(); // El backend ya devuelve un array
   },
 
   async updateBusinessHours(hours: BusinessHours): Promise<BusinessHours> {
@@ -172,15 +169,12 @@ export const databaseService = {
   },
 
   async updateMenuItem(id: string, itemData: Partial<MenuItem>): Promise<MenuItem> {
-    const response = await fetch(`<span class="math-inline">\{API\_URL\}/menu\-items/</span>{id}`, { // <--- ASEGÚRATE DE ESTA LÍNEA
+    const response = await fetch(`${API_URL}/menu-items/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(itemData),
     });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Error al actualizar el ítem de menú.' }));
-      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
-    }
+    if (!response.ok) throw new Error('Error updating menu item');
     return response.json();
   },
 
@@ -318,7 +312,108 @@ export const databaseService = {
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
     // DELETE usualmente no devuelve contenido, o devuelve un mensaje de éxito que no necesitamos procesar aquí.
-  }
+  },
+
+  async fuploadBannerImageFile(file: File): Promise<UploadedFileResponse> {
+    const formData = new FormData();
+    formData.append('bannerImage', file); // 'bannerImage' debe coincidir con multer.single() en el backend
+    const response = await fetch(`${API_URL}/upload/banner-image`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al subir la imagen del banner.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+  async addBannerSlide(slideData: Omit<BannerSlide, 'id'>): Promise<BannerSlide> {
+    const response = await fetch(`${API_URL}/banner-slides`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(slideData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al agregar el slide del banner.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  async updateBannerSlide(id: string, slideData: Partial<BannerSlide>): Promise<BannerSlide> {
+    // Utiliza backticks (`) para el template string y ${} para las variables
+    const response = await fetch(`${API_URL}/banner-slides/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(slideData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al actualizar el slide del banner.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  async deleteBannerSlide(id: string): Promise<void> {
+    const response = await fetch(`${API_URL}/banner-slides/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al eliminar el slide del banner.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+  },
+
+  async uploadSiteLogoFile(file: File): Promise<UploadedFileResponse> {
+    const formData = new FormData();
+    formData.append('siteLogo', file); // 'siteLogo' debe coincidir con multer.single() en el backend
+
+    const response = await fetch(`${API_URL}/upload/site-logo`, { // Endpoint para el logo del sitio
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al subir el logo del sitio.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+  async addSocialMedia(socialData: Omit<SocialMedia, 'id'>): Promise<SocialMedia> {
+    const response = await fetch(`${API_URL}/social-media`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(socialData),
+    });
+    if (!response.ok) throw new Error('Error adding social media link');
+    return response.json();
+  },
+
+
+  async addBusinessHours(hoursData: Omit<BusinessHours, 'id'>): Promise<BusinessHours> {
+    const response = await fetch(`${API_URL}/business-hours`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(hoursData),
+    });
+    if (!response.ok) throw new Error('Error adding business hours');
+    return response.json();
+  },
+
+  async deleteBusinessHours(id: string): Promise<void> {
+    const response = await fetch(`${API_URL}/business-hours/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Error deleting business hours');
+  },
+
+  async deleteSocialMedia(id: string): Promise<void> {
+    const response = await fetch(`${API_URL}/social-media/${id}`, { // Corregido aquí, antes tenías un template string malformado en tu archivo
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Error deleting social media link');
+  },
+  // Removed duplicate getBusinessHours to fix duplicate identifier error
 
 };
 

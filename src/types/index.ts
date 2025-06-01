@@ -12,11 +12,15 @@ export interface MenuItem {
   url: string;
 }
 
+
 export interface BannerSlide {
   id: string;
   image: string;
   title: string;
-  subtitle?: string;
+  subtitle: string;
+  cta_text?: string | null; 
+  cta_url?: string | null;
+  cta_is_visible?: boolean;
 }
 
 export interface CompanyInfo {
@@ -136,3 +140,42 @@ export interface CompanyInfo {
   description: string;
   images: Image[]; 
 }
+
+export interface MapLocation {
+  embedUrl: string;
+}
+
+
+export interface SiteSettingsData { 
+  mapLocation: MapLocation;
+  logo: string;
+  footerShortDescription?: string; 
+  footerCopyright?: string;   
+}
+
+export interface SiteSettingsPayload {
+  mapLocation?: MapLocation;
+  logo?: string; // Esta será la ruta del archivo del logo
+  footerShortDescription?: string; // Añadido
+  footerCopyright?: string;      // Añadido
+  // logoFile?: File | null; // Este campo es más para la lógica interna del store/componente, no necesariamente parte del tipo que va al backend
+}
+
+// Interfaz principal para los datos del sitio web en el store
+export interface WebsiteData {
+  // ... (tus otros campos: contactInfo, menuItems, bannerSlides, companyInfo, etc.)
+  products: Product[];
+  productCategories: ProductCategory[];
+  socialMedia: SocialMedia[];
+  phoneNumbers: PhoneNumber[];
+  businessHours: BusinessHours[]; // Asegúrate de que esto sea un array si así lo manejas
+
+  mapLocation: MapLocation;
+  logo: string;
+  footerShortDescription: string; // <-- AÑADE ESTA LÍNEA
+  footerCopyright: string;      // <-- AÑADE ESTA LÍNEA
+}
+
+export interface MapLocation { embedUrl: string; } // Asegúrate que esté
+export interface SiteSettingsResponse { mapLocation: MapLocation; logo: string; footerShortDescription?: string; footerCopyright?: string; }
+export interface SiteSettingsPayload { mapLocation?: MapLocation; logo?: string; footerShortDescription?: string; footerCopyright?: string; }

@@ -26,7 +26,7 @@ export interface Image { // Definición para un objeto de imagen individual
     id: string;
     src: string; // Esta será la ruta o URL de la imagen
     alt: string;
-  }
+}
 
 // Middleware de manejo de errores genérico (opcional, pero útil)
 const handleAsync = (
@@ -51,9 +51,70 @@ const handleAsync = (
 
 
 const UPLOAD_DIR_PRODUCT_LOGOS = "public/uploads/product_logos";
-
 const absoluteUploadDirProductLogos = path.join(__dirname, UPLOAD_DIR_PRODUCT_LOGOS);
 fs.mkdirSync(absoluteUploadDirProductLogos, { recursive: true });
+
+const UPLOAD_DIR_BANNER = "public/uploads/banner_images";
+const absoluteUploadDirBanner = path.join(__dirname, UPLOAD_DIR_BANNER);
+fs.mkdirSync(absoluteUploadDirBanner, { recursive: true });
+
+const UPLOAD_DIR_SITE_LOGO = "public/uploads/site_logo";
+const absoluteUploadDirSiteLogo = path.join(__dirname, UPLOAD_DIR_SITE_LOGO);
+fs.mkdirSync(absoluteUploadDirSiteLogo, { recursive: true });
+
+
+const siteLogoStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, absoluteUploadDirSiteLogo);
+    },
+    filename: function (req, file, cb) {
+        // Usar un nombre de archivo más predecible o mantener el original con un sufijo
+        // Para el logo del sitio, podrías querer un nombre fijo como 'site-logo' y simplemente sobrescribirlo,
+        // o añadir un timestamp para versionado. Por simplicidad, usemos un sufijo único.
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, "site-logo-" + uniqueSuffix + path.extname(file.originalname));
+    },
+});
+
+const siteLogoUpload = multer({
+    storage: siteLogoStorage,
+    limits: { fileSize: 1 * 1024 * 1024 }, // Límite de 1MB para el logo del sitio (ajusta)
+    fileFilter: function (req, file, cb) {
+        const allowedTypes = /jpeg|jpg|png|webp|svg/; // SVG también es común para logos
+        const mimetype = allowedTypes.test(file.mimetype);
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error("Error: Tipo de archivo no permitido para el logo. Solo se permiten JPEG, JPG, PNG, WEBP, SVG."));
+    },
+});
+
+
+
+const bannerImageStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, absoluteUploadDirBanner);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, "banner-" + uniqueSuffix + path.extname(file.originalname)); // Prefijo 'banner-'
+    },
+});
+
+const bannerImageUpload = multer({
+    storage: bannerImageStorage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Límite de 5MB (ajusta si es necesario)
+    fileFilter: function (req, file, cb) {
+        const allowedTypes = /jpeg|jpg|png|webp/;
+        const mimetype = allowedTypes.test(file.mimetype);
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error("Error: Tipo de archivo no permitido para imagen de banner. Solo se permiten JPEG, JPG, PNG, WEBP."));
+    },
+});
 
 const productLogoStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -93,7 +154,7 @@ const productLogoUpload = multer({
 // --- Nuevo Endpoint para Subir LOGOS DE PRODUCTOS ---
 app.post(
     "/api/upload/product-logo",
-    productLogoUpload.single("productLogo"), 
+    productLogoUpload.single("productLogo"),
     (req: Request, res: Response, next: NextFunction) => {
         if (!req.file) {
             res.status(400).json({ error: "No se subió ningún archivo de logo." });
@@ -106,7 +167,7 @@ app.post(
             const publicUrl = `<span class="math-inline">\{req\.protocol\}\://</span>{req.get("host")}/${relativePath}`;
             res.status(201).json({
                 message: "Logo de producto subido exitosamente!",
-                filePath: `/${relativePath}`, 
+                filePath: `/${relativePath}`,
                 publicUrl: publicUrl,
             });
         } catch (processingError) {
@@ -151,9 +212,9 @@ const companyImageStorage = multer.diskStorage({
         cb(
             null,
             file.fieldname +
-                "-" +
-                uniqueSuffix +
-                path.extname(file.originalname)
+            "-" +
+            uniqueSuffix +
+            path.extname(file.originalname)
         );
     },
 });
@@ -183,61 +244,61 @@ const companyImageUpload = multer({
 
 // Snippet del usuario:
 app.post(
-  "/api/upload/company-image",
-  companyImageUpload.single("companyImage"), // Middleware de Multer para procesar el archivo
-  (req: Request, res: Response, next: NextFunction) => { // Manejador principal de la ruta
-      if (!req.file) {
-          // Si no hay archivo, enviamos un error y detenemos la ejecución aquí.
-          res.status(400).json({ error: "No se subió ningún archivo." });
-          return; // IMPORTANTE: Añadir return para salir de la función.
-      }
+    "/api/upload/company-image",
+    companyImageUpload.single("companyImage"), // Middleware de Multer para procesar el archivo
+    (req: Request, res: Response, next: NextFunction) => { // Manejador principal de la ruta
+        if (!req.file) {
+            // Si no hay archivo, enviamos un error y detenemos la ejecución aquí.
+            res.status(400).json({ error: "No se subió ningún archivo." });
+            return; // IMPORTANTE: Añadir return para salir de la función.
+        }
 
-      // Si hay un archivo, procedemos a construir la respuesta.
-      try {
-          // Usamos el operador de aserción no nula (!) porque ya verificamos req.file arriba.
-          const relativePath = path
-              .join("uploads/company_images", req.file!.filename) 
-              .replace(/\\/g, "/"); // Asegurar slashes para URL
-          
-          const publicUrl = `${req.protocol}://${req.get("host")}/${relativePath}`;
+        // Si hay un archivo, procedemos a construir la respuesta.
+        try {
+            // Usamos el operador de aserción no nula (!) porque ya verificamos req.file arriba.
+            const relativePath = path
+                .join("uploads/company_images", req.file!.filename)
+                .replace(/\\/g, "/"); // Asegurar slashes para URL
 
-          res.status(201).json({
-              message: "Archivo subido exitosamente!",
-              filePath: `/${relativePath}`, // Ruta para usar en <img src> o guardar en la BD
-              publicUrl: publicUrl,       // URL completa si la necesitas
-          });
-      } catch (processingError) {
-          // Si hay un error procesando el nombre del archivo o la URL,
-          // pasarlo al siguiente manejador de errores (el que definimos a continuación).
-          next(processingError);
-      }
-  },
-  // Middleware de manejo de errores específico para esta ruta (para errores de Multer o del fileFilter)
-  (error: any, req: Request, res: Response, next: NextFunction): void => {
-      if (res.headersSent) { // Si ya se envió una respuesta, delegar a Express
-          return next(error);
-      }
+            const publicUrl = `${req.protocol}://${req.get("host")}/${relativePath}`;
 
-      if (error instanceof multer.MulterError) {
-          // Un error conocido de Multer (ej. límite de tamaño excedido)
-          res.status(400).json({ error: `Error de Multer: ${error.message}` });
-          return; 
-      } else if (error && error.message && error.message.includes("Tipo de archivo no permitido")) {
-          // El error específico de nuestro fileFilter
-          res.status(400).json({ error: error.message });
-          return; 
-      } else if (error) {
-          // Otros errores que pudieron ser pasados con next(error) desde el manejador principal
-          // o errores desconocidos que ocurrieron en Multer y no son MulterError.
-          console.error("Error inesperado durante la subida de imagen para Company Info:", error);
-          res.status(500).json({ error: "Error interno del servidor procesando el archivo." });
-          return;
-      }
-      
-      // Si este middleware de error fue llamado sin un objeto 'error' 
-      // (lo cual es muy poco común para un manejador de errores), simplemente pasa al siguiente.
-      next();
-  }
+            res.status(201).json({
+                message: "Archivo subido exitosamente!",
+                filePath: `/${relativePath}`, // Ruta para usar en <img src> o guardar en la BD
+                publicUrl: publicUrl,       // URL completa si la necesitas
+            });
+        } catch (processingError) {
+            // Si hay un error procesando el nombre del archivo o la URL,
+            // pasarlo al siguiente manejador de errores (el que definimos a continuación).
+            next(processingError);
+        }
+    },
+    // Middleware de manejo de errores específico para esta ruta (para errores de Multer o del fileFilter)
+    (error: any, req: Request, res: Response, next: NextFunction): void => {
+        if (res.headersSent) { // Si ya se envió una respuesta, delegar a Express
+            return next(error);
+        }
+
+        if (error instanceof multer.MulterError) {
+            // Un error conocido de Multer (ej. límite de tamaño excedido)
+            res.status(400).json({ error: `Error de Multer: ${error.message}` });
+            return;
+        } else if (error && error.message && error.message.includes("Tipo de archivo no permitido")) {
+            // El error específico de nuestro fileFilter
+            res.status(400).json({ error: error.message });
+            return;
+        } else if (error) {
+            // Otros errores que pudieron ser pasados con next(error) desde el manejador principal
+            // o errores desconocidos que ocurrieron en Multer y no son MulterError.
+            console.error("Error inesperado durante la subida de imagen para Company Info:", error);
+            res.status(500).json({ error: "Error interno del servidor procesando el archivo." });
+            return;
+        }
+
+        // Si este middleware de error fue llamado sin un objeto 'error' 
+        // (lo cual es muy poco común para un manejador de errores), simplemente pasa al siguiente.
+        next();
+    }
 );
 
 // --- Products ---
@@ -370,17 +431,20 @@ app.get(
     })
 );
 
-app.post(
-    "/api/social-media",
-    handleAsync(async (req, res) => {
-        const { name, icon, url } = req.body; // Corregido: platform -> name
-        const result = await pool.query(
-            "INSERT INTO social_media (name, icon, url) VALUES ($1, $2, $3) RETURNING *",
-            [name, icon, url]
-        );
-        res.status(201).json(result.rows[0]);
-    })
-);
+app.post("/api/social-media", handleAsync(async (req: Request, res: Response) => {
+    const { name, icon, url } = req.body;
+    const newId = uuidv4(); // Genera un nuevo ID
+
+    if (!name || !icon || !url) { // Validación básica
+        return res.status(400).json({ error: "Nombre, ícono y URL son obligatorios." });
+    }
+
+    const result = await pool.query(
+        "INSERT INTO social_media (id, name, icon, url) VALUES ($1, $2, $3, $4) RETURNING *", // Añade 'id' a las columnas
+        [newId, name, icon, url] // Pasa el newId
+    );
+    res.status(201).json(result.rows[0]);
+}));
 
 app.put(
     "/api/social-media/:id",
@@ -530,58 +594,118 @@ app.delete(
 );
 
 // --- Banner Slides ---
-app.get(
-    "/api/banner-slides",
-    handleAsync(async (req, res) => {
-        const result = await pool.query(
-            "SELECT * FROM banner_slides ORDER BY id ASC"
-        );
-        res.json(result.rows);
-    })
-);
-
 app.post(
-    "/api/banner-slides",
-    handleAsync(async (req, res) => {
-        const { id, image, title, subtitle } = req.body; // Asumimos que el id también se envía o se genera
-        const result = await pool.query(
-            "INSERT INTO banner_slides (id, image, title, subtitle) VALUES ($1, $2, $3, $4) RETURNING *",
-            [id, image, title, subtitle]
-        );
-        res.status(201).json(result.rows[0]);
-    })
+    "/api/upload/banner-image",
+    bannerImageUpload.single("bannerImage"), // Espera un campo 'bannerImage'
+    (req: Request, res: Response, next: NextFunction) => {
+        if (!req.file) {
+            res.status(400).json({ error: "No se subió ninguna imagen para el banner." });
+            return;
+        }
+        try {
+            const relativePath = path
+                .join("uploads/banner_images", req.file!.filename)
+                .replace(/\\/g, "/");
+            const publicUrl = `${req.protocol}://${req.get("host")}/${relativePath}`;
+            res.status(201).json({
+                message: "Imagen de banner subida exitosamente!",
+                filePath: `/${relativePath}`,
+                publicUrl: publicUrl,
+            });
+        } catch (processingError) {
+            next(processingError);
+        }
+    },
+    (error: any, req: Request, res: Response, next: NextFunction): void => { // Manejador de errores de Multer
+        if (res.headersSent) { return next(error); }
+        if (error instanceof multer.MulterError) {
+            res.status(400).json({ error: `Error de Multer (banner image): ${error.message}` });
+            return;
+        } else if (error && error.message) {
+            res.status(400).json({ error: error.message });
+            return;
+        } else if (error) {
+            console.error("Error inesperado durante la subida de imagen de banner:", error);
+            res.status(500).json({ error: "Error interno procesando la imagen del banner." });
+            return;
+        }
+        next();
+    }
 );
 
-app.put(
-    "/api/banner-slides/:id",
-    handleAsync(async (req, res) => {
-        const { id } = req.params;
-        const { image, title, subtitle } = req.body;
-        const result = await pool.query(
-            "UPDATE banner_slides SET image = $1, title = $2, subtitle = $3 WHERE id = $4 RETURNING *",
-            [image, title, subtitle, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Banner slide not found" });
-        }
-        res.json(result.rows[0]);
-    })
-);
+// --- Endpoints CRUD para Banner Slides ---
+// GET /api/banner-slides (Leer todos los slides) - Ya lo tienes, asegúrate que seleccione todos los campos nuevos
+app.get("/api/banner-slides", handleAsync(async (req, res) => {
+    const result = await pool.query("SELECT * FROM banner_slides ORDER BY id ASC"); // O el orden que prefieras
+    res.json(result.rows);
+}));
 
-app.delete(
-    "/api/banner-slides/:id",
-    handleAsync(async (req, res) => {
-        const { id } = req.params;
-        const result = await pool.query(
-            "DELETE FROM banner_slides WHERE id = $1 RETURNING *",
-            [id]
-        );
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: "Banner slide not found" });
-        }
-        res.status(204).send();
-    })
-);
+// POST /api/banner-slides (Crear un nuevo slide)
+app.post("/api/banner-slides", handleAsync(async (req, res) => {
+    const { image, title, subtitle, cta_text, cta_url, cta_is_visible } = req.body;
+    const newId = uuidv4(); // Generar ID para el nuevo slide
+
+    if (!image || !title) { // Validación básica
+        return res.status(400).json({ error: "La imagen y el título son obligatorios para un slide." });
+    }
+
+    const result = await pool.query(
+        "INSERT INTO banner_slides (id, image, title, subtitle, cta_text, cta_url, cta_is_visible) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+        [newId, image, title, subtitle, cta_text, cta_url, cta_is_visible === undefined ? false : cta_is_visible]
+    );
+    res.status(201).json(result.rows[0]);
+}));
+
+// PUT /api/banner-slides/:id (Actualizar un slide existente)
+app.put("/api/banner-slides/:id", handleAsync(async (req, res) => {
+    const { id } = req.params;
+    const { image, title, subtitle, cta_text, cta_url, cta_is_visible } = req.body;
+
+    // Aquí podrías construir una query dinámica si solo quieres actualizar los campos que se envían,
+    // o simplemente actualizar todos los campos permitidos.
+    // Por simplicidad, actualizaremos todos los campos que podrían venir.
+    if (image === undefined && title === undefined && subtitle === undefined && cta_text === undefined && cta_url === undefined && cta_is_visible === undefined) {
+        return res.status(400).json({ error: "No data provided for update." });
+    }
+
+    // Lógica para construir la query de actualización dinámicamente (opcional pero más flexible)
+    const fieldsToUpdate = [];
+    const values = [];
+    let paramCount = 1;
+
+    if (image !== undefined) { fieldsToUpdate.push(`image = $${paramCount++}`); values.push(image); }
+    if (title !== undefined) { fieldsToUpdate.push(`title = $${paramCount++}`); values.push(title); }
+    if (subtitle !== undefined) { fieldsToUpdate.push(`subtitle = $${paramCount++}`); values.push(subtitle); }
+    if (cta_text !== undefined) { fieldsToUpdate.push(`cta_text = $${paramCount++}`); values.push(cta_text); }
+    if (cta_url !== undefined) { fieldsToUpdate.push(`cta_url = $${paramCount++}`); values.push(cta_url); }
+    if (cta_is_visible !== undefined) { fieldsToUpdate.push(`cta_is_visible = $${paramCount++}`); values.push(cta_is_visible); }
+
+    if (fieldsToUpdate.length === 0) {
+        return res.status(400).json({ error: "No valid fields to update." });
+    }
+
+    values.push(id); // Para la cláusula WHERE id = $N
+    const queryText = `UPDATE banner_slides SET ${fieldsToUpdate.join(", ")} WHERE id = $${paramCount} RETURNING *`;
+
+    const result = await pool.query(queryText, values);
+
+    if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Banner slide not found" });
+    }
+    res.json(result.rows[0]);
+}));
+
+// DELETE /api/banner-slides/:id (Eliminar un slide)
+app.delete("/api/banner-slides/:id", handleAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await pool.query("DELETE FROM banner_slides WHERE id = $1 RETURNING *", [id]);
+    if (result.rowCount === 0) {
+        return res.status(404).json({ error: "Banner slide not found" });
+    }
+    // Opcional: Aquí también podrías querer eliminar el archivo de imagen del servidor si ya no se usa en ningún otro slide.
+    // Esto requeriría lógica adicional para obtener el `image_path` de result.rows[0] y usar fs.unlink.
+    res.status(204).send();
+}));
 
 // --- Menu Items ---
 app.get(
@@ -606,21 +730,23 @@ app.post(
     })
 );
 
-app.put(
-    "/api/menu-items/:id",
-    handleAsync(async (req, res) => {
-        const { id } = req.params;
-        const { text, url } = req.body;
-        const result = await pool.query(
-            "UPDATE menu_items SET text = $1, url = $2 WHERE id = $3 RETURNING *",
-            [text, url, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Menu item not found" });
-        }
-        res.json(result.rows[0]);
-    })
-);
+app.put("/api/menu-items/:id", handleAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { text } = req.body;
+
+    if (text === undefined || typeof text !== 'string') {
+        return res.status(400).json({ error: "El campo 'text' es obligatorio y debe ser un string." });
+    }
+
+    const result = await pool.query(
+        "UPDATE menu_items SET text = $1 WHERE id = $2 RETURNING *",
+        [text, id]
+    );
+    if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Menu item not found" });
+    }
+    res.json(result.rows[0]);
+}));
 
 app.delete(
     "/api/menu-items/:id",
@@ -720,39 +846,39 @@ app.get(
 );
 
 app.post("/api/contact-info", handleAsync(async (req: Request, res: Response) => {
-  const { icon, text, show_on_mobile, is_active } = req.body;
-  const newId = uuidv4();
+    const { icon, text, show_on_mobile, is_active } = req.body;
+    const newId = uuidv4();
 
-  // Validación básica
-  if (!icon || !text) {
-    return res.status(400).json({ error: "Icono y texto son obligatorios." });
-  }
+    // Validación básica
+    if (!icon || !text) {
+        return res.status(400).json({ error: "Icono y texto son obligatorios." });
+    }
 
-  const result = await pool.query(
-    "INSERT INTO contact_info (id, icon, text, show_on_mobile, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-    [newId, icon, text, show_on_mobile === undefined ? true : show_on_mobile, is_active === undefined ? true : is_active]
-  );
-  res.status(201).json(result.rows[0]);
+    const result = await pool.query(
+        "INSERT INTO contact_info (id, icon, text, show_on_mobile, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        [newId, icon, text, show_on_mobile === undefined ? true : show_on_mobile, is_active === undefined ? true : is_active]
+    );
+    res.status(201).json(result.rows[0]);
 }));
 
 // En src/server/index.ts
 app.put("/api/contact-info/:id", handleAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  const { icon, text, show_on_mobile, is_active } = req.body;
+    const { icon, text, show_on_mobile, is_active } = req.body;
 
-  if (icon === undefined && text === undefined && show_on_mobile === undefined && is_active === undefined) {
-    return res.status(400).json({ error: "No hay datos para actualizar." });
-  }
-  const result = await pool.query(
-    "UPDATE contact_info SET icon = $1, text = $2, show_on_mobile = $3, is_active = $4 WHERE id = $5 RETURNING *",
-    [icon, text, show_on_mobile, is_active, id]
-  );
+    if (icon === undefined && text === undefined && show_on_mobile === undefined && is_active === undefined) {
+        return res.status(400).json({ error: "No hay datos para actualizar." });
+    }
+    const result = await pool.query(
+        "UPDATE contact_info SET icon = $1, text = $2, show_on_mobile = $3, is_active = $4 WHERE id = $5 RETURNING *",
+        [icon, text, show_on_mobile, is_active, id]
+    );
 
-  if (result.rows.length === 0) {
-    return res.status(404).json({ error: "Ítem de contacto no encontrado." });
-  }
-  res.json(result.rows[0]);
+    if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Ítem de contacto no encontrado." });
+    }
+    res.json(result.rows[0]);
 }));
 app.delete(
     "/api/timeline-events/:id",
@@ -833,49 +959,40 @@ app.get(
     })
 );
 
-app.put(
-    "/api/site-settings",
-    handleAsync(async (req, res) => {
-        const { mapLocation, logo } = req.body; // mapLocation = { embedUrl: '...' }, logo = '...'
+app.put("/api/site-settings", handleAsync(async (req: Request, res: Response) => {
+    const { mapLocation, logo } = req.body; // 'logo' aquí será la filePath del logo subido
 
-        const fieldsToUpdate = [];
-        const values = [];
-        let paramCount = 1;
+    const fieldsToUpdate = [];
+    const values = [];
+    let paramCount = 1;
 
-        if (mapLocation && mapLocation.embedUrl !== undefined) {
-            fieldsToUpdate.push(`map_embed_url = $${paramCount++}`);
-            values.push(mapLocation.embedUrl);
-        }
-        if (logo !== undefined) {
-            fieldsToUpdate.push(`site_logo_url = $${paramCount++}`);
-            values.push(logo);
-        }
+    if (mapLocation && mapLocation.embedUrl !== undefined) {
+        fieldsToUpdate.push(`map_embed_url = $${paramCount++}`);
+        values.push(mapLocation.embedUrl);
+    }
+    if (logo !== undefined) { // Si se envía un nuevo logo (filePath)
+        fieldsToUpdate.push(`site_logo_url = $${paramCount++}`);
+        values.push(logo); // 'logo' es la ruta, ej. /uploads/site_logo/site-logo-123.png
+    }
 
-        if (fieldsToUpdate.length === 0) {
-            return res
-                .status(400)
-                .json({ error: "No valid fields provided for update" });
-        }
+    if (fieldsToUpdate.length === 0) {
+        return res.status(400).json({ error: "No valid fields provided for update" });
+    }
 
-        values.push("default"); // WHERE id = 'default'
+    values.push("default"); // WHERE id = 'default' en la tabla site_settings
 
-        const queryText = `UPDATE site_settings SET ${fieldsToUpdate.join(
-            ", "
-        )} WHERE id = $${paramCount} RETURNING map_embed_url, site_logo_url`;
+    const queryText = `UPDATE site_settings SET ${fieldsToUpdate.join(", ")} WHERE id = $${paramCount} RETURNING map_embed_url, site_logo_url`;
 
-        const result = await pool.query(queryText, values);
-        if (result.rows.length > 0) {
-            res.json({
-                mapLocation: { embedUrl: result.rows[0].map_embed_url },
-                logo: result.rows[0].site_logo_url,
-            });
-        } else {
-            res.status(404).json({
-                error: "Site settings not found to update (id: default)",
-            });
-        }
-    })
-);
+    const result = await pool.query(queryText, values);
+    if (result.rows.length > 0) {
+        res.json({
+            mapLocation: { embedUrl: result.rows[0].map_embed_url },
+            logo: result.rows[0].site_logo_url // Devuelve la nueva URL del logo
+        });
+    } else {
+        res.status(404).json({ error: "Site settings not found to update (id: default)" });
+    }
+}));
 
 // --- Users (Admin) ---
 // GET para listar usuarios (ejemplo simple, sin contraseñas)
@@ -900,3 +1017,46 @@ app.listen(PORT, () => {
         `Server running on port ${PORT} and serving static files from 'public' directory`
     );
 });
+
+
+// --- Nuevo Endpoint para Subir el LOGO DEL SITIO ---
+app.post(
+    "/api/upload/site-logo",
+    siteLogoUpload.single("siteLogo"), // Espera un campo 'siteLogo'
+    (req: Request, res: Response, next: NextFunction) => {
+        if (!req.file) {
+            res.status(400).json({ error: "No se subió ningún archivo para el logo." });
+            return;
+        }
+        try {
+            const relativePath = path
+                .join("uploads/site_logo", req.file!.filename)
+                .replace(/\\/g, "/");
+            const publicUrl = `<span class="math-inline">\{req\.protocol\}\://</span>{req.get("host")}/${relativePath}`;
+            res.status(201).json({
+                message: "Logo del sitio subido exitosamente!",
+                filePath: `/${relativePath}`, // Esta es la ruta que guardarás
+                publicUrl: publicUrl,
+            });
+        } catch (processingError) {
+            next(processingError);
+        }
+    },
+    // Middleware de manejo de errores para esta ruta
+    (error: any, req: Request, res: Response, next: NextFunction): void => {
+        if (res.headersSent) { return next(error); }
+        if (error instanceof multer.MulterError) {
+            res.status(400).json({ error: `Error de Multer (site logo): ${error.message}` });
+            return;
+        } else if (error && error.message) {
+            res.status(400).json({ error: error.message });
+            return;
+        } else if (error) {
+            console.error("Error inesperado durante la subida del logo del sitio:", error);
+            res.status(500).json({ error: "Error interno procesando el logo del sitio." });
+            return;
+        }
+        next();
+    }
+);
+

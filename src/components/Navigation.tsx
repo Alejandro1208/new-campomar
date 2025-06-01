@@ -1,119 +1,136 @@
 import React, { useState, useEffect } from 'react';
+import { Link as ScrollLink } from 'react-scroll';
 import { useWebsiteStore } from '../store/useWebsiteStore';
-import { Menu, X, LogIn, UserPlus } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Menu, X, LogIn } from 'lucide-react';
 
 const Navigation: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const { menuItems, logo } = useWebsiteStore();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const logoUrl = useWebsiteStore((state) => state.logo);
+  const menuItems = useWebsiteStore((state) => state.menuItems);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50); // O el umbral que prefieras
     };
-
     window.addEventListener('scroll', handleScroll);
+    // Ejecuta handleScroll una vez al montar para establecer el estado inicial correcto
+    handleScroll(); 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsOpen(!isOpen);
   };
 
+  const fullLogoUrl = logoUrl && logoUrl.startsWith('/') 
+                      ? `http://localhost:3001${logoUrl}` 
+                      : logoUrl;
+
+  // Colores fijos para texto y hover, visibles contra fondo blanco
+  const textColorClass = "primary-500"; // Color del texto
+  const hoverTextColorClass = "hover:text-white"; // Color al pasar el mouse
+  const activeTextColorClass = "text-primary-500";
+  const hoverBgClass = "hover:bg-primary-500"; // Fondo al pasar el mouse
+  const activeBgClass = "bg-gray-100";
+  const logoFallbackColorClass = "text-primary-500"; // Color para el texto/icono del logo si no hay imagen
+
   return (
-    <nav className={`w-full z-50 transition-all duration-300 top-8 ${scrolled ? 'bg-white shadow-custom py-2' : 'bg-transparent py-4'}`}>
+    <nav 
+      className={`fixed w-full z-30 transition-all duration-300 ease-in-out bg-white ${
+        // La sombra y el padding vertical pueden seguir cambiando con el scroll si quieres
+        isScrolled ? 'shadow-lg py-4' : 'shadow-md py-6' 
+      }`}
+      style={{ 
+        // --- CAMBIO PRINCIPAL AQUÍ ---
+        top: isScrolled ? '0px' : 'var(--topbar-height, 40px)', 
+        // -----------------------------
+        '--navbar-height': isScrolled ? '64px' : '80px' // Variable para uso interno o por otros componentes
+      } as React.CSSProperties} 
+    >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <a href="#home" className="flex items-center">
-              <LogIn className="h-8 w-8 text-primary-500" />
-              <span className="ml-2 text-xl font-bold text-primary-500">NombreEmpresa</span>
+            <a href="#home" className="flex items-center" onClick={() => setIsOpen(false)}>
+              {fullLogoUrl ? (
+                <img src={fullLogoUrl} alt="Logo de la Empresa" className="h-10 md:h-12 w-auto" />
+              ) : (
+                <>
+                  <LogIn className={`h-8 w-8 ${logoFallbackColorClass}`} /> 
+                  <span className={`ml-2 text-xl font-bold ${logoFallbackColorClass}`}>NombreEmpresa</span>
+                </>
+              )}
             </a>
           </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <a
-                key={item.id}
-                href={item.url}
-                className="text-primary-500 hover:text-primary-300 transition-colors duration-200"
-              >
-                {item.text}
-              </a>
-            ))}
-          </div>
-
-          {/* Login/Register Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/admin"
-              className="flex items-center px-4 py-2 rounded-full border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-200"
-            >
-              <LogIn className="h-4 w-4 mr-2" />
-              <span>Ingresar</span>
-            </Link>
-            <Link
-              to="/register"
-              className="flex items-center px-4 py-2 rounded-full bg-primary-500 text-white hover:bg-primary-400 transition-all duration-200"
-            >
-              <UserPlus className="h-4 w-4 mr-2" />
-              <span>Registrarse</span>
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
+          {/* Botón del Menú Móvil */}
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="text-primary-500 hover:text-primary-300 transition-colors duration-200"
+              type="button"
+              className={`p-2 rounded-md ${textColorClass} ${hoverBgClass} focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500`}
+              aria-controls="mobile-menu"
+              aria-expanded={isOpen}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <span className="sr-only">Abrir menú principal</span>
+              {isOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
             </button>
+          </div>
+
+          {/* Links de Navegación - Escritorio */}
+          <div className="hidden md:flex md:items-center md:space-x-2 lg:space-x-4">
+            {(menuItems || []).map((item) => (
+              <ScrollLink
+                key={item.id}
+                to={item.url.startsWith('#') ? item.url.substring(1) : item.url}
+                spy={true}
+                smooth={true}
+                offset={isScrolled ? -60 : -(60 + parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topbar-height') || '40'))} // Ajustar offset dinámicamente
+                duration={500}
+                className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors duration-200
+                  ${textColorClass} ${hoverBgClass} ${hoverTextColorClass}
+                `}
+                activeClass={`${activeTextColorClass} ${activeBgClass} font-semibold`}
+              >
+                {item.text}
+              </ScrollLink>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white shadow-lg">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-col space-y-4">
-              {menuItems.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.url}
-                  className="text-primary-500 hover:text-primary-300 transition-colors duration-200 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.text}
-                </a>
-              ))}
-              <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200">
-                <Link
-                  to="/admin"
-                  className="flex items-center justify-center px-4 py-2 rounded-full border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-200"
-                >
-                  <LogIn className="h-4 w-4 mr-2" />
-                  <span>Ingresar</span>
-                </Link>
-                <Link
-                  to="/register"
-                  className="flex items-center justify-center px-4 py-2 rounded-full bg-primary-500 text-white hover:bg-primary-400 transition-all duration-200"
-                >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  <span>Registrarse</span>
-                </Link>
-              </div>
-            </div>
+      {/* Menú Móvil */}
+      {isOpen && (
+        <div 
+            className="md:hidden absolute left-0 w-full bg-white shadow-lg" 
+            // El 'top' del menú móvil debe ser la altura actual del navbar
+            style={{ top: isScrolled ? '64px' : '80px' }} 
+            id="mobile-menu"
+        >
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {(menuItems || []).map((item) => (
+              <ScrollLink
+                key={item.id}
+                to={item.url.startsWith('#') ? item.url.substring(1) : item.url}
+                spy={true}
+                smooth={true}
+                offset={isScrolled ? -60 : -(60 + parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topbar-height') || '40'))}
+                duration={500}
+                className={`block px-3 py-2 rounded-md text-base font-medium ${textColorClass} ${hoverBgClass} ${hoverTextColorClass}`}
+                activeClass={`${activeTextColorClass} ${activeBgClass} font-semibold`}
+                onClick={toggleMenu} 
+              >
+                {item.text}
+              </ScrollLink>
+            ))}
           </div>
         </div>
       )}
