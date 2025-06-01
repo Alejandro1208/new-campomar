@@ -10,7 +10,7 @@ import {
   TimelineEvent,
   MapLocation,
   SiteSettingsPayload,
-  ContactInfo  // <--- Importa desde ../types
+  ContactInfo,
 } from '../types';
 
 const API_URL = 'http://localhost:3001/api';
@@ -171,6 +171,19 @@ export const databaseService = {
     return response.json();
   },
 
+  async updateMenuItem(id: string, itemData: Partial<MenuItem>): Promise<MenuItem> {
+    const response = await fetch(`<span class="math-inline">\{API\_URL\}/menu\-items/</span>{id}`, { // <--- ASEGÚRATE DE ESTA LÍNEA
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(itemData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al actualizar el ítem de menú.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
+
   // Company Info
   async getCompanyInfo(): Promise<CompanyInfo> {
     const response = await fetch(`${API_URL}/company-info`);
@@ -262,7 +275,7 @@ export const databaseService = {
     }
     return response.json();
   },
-    async getContactInfo(): Promise<ContactInfo[]> {
+  async getContactInfo(): Promise<ContactInfo[]> {
     const response = await fetch(`${API_URL}/contact-info`);
     if (!response.ok) {
       console.error('Error fetching contact info, returning empty array.');
@@ -270,42 +283,42 @@ export const databaseService = {
     }
     return response.json();
   },
-  async  addContactInfoItem(itemData: Omit<ContactInfo, 'id'>): Promise<ContactInfo> {
-  const response = await fetch(`${API_URL}/contact-info`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(itemData),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: 'Error al agregar el ítem de contacto.' }));
-    throw new Error(errorData.message || `Error del servidor: ${response.status}`);
-  }
-  return response.json();
-},
+  async addContactInfoItem(itemData: Omit<ContactInfo, 'id'>): Promise<ContactInfo> {
+    const response = await fetch(`${API_URL}/contact-info`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(itemData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al agregar el ítem de contacto.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
 
-async updateContactInfoItem(id: string, itemData: Partial<ContactInfo>): Promise<ContactInfo> {
-  const response = await fetch(`${API_URL}/contact-info/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(itemData),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: 'Error al actualizar el ítem de contacto.' }));
-    throw new Error(errorData.message || `Error del servidor: ${response.status}`);
-  }
-  return response.json();
-},
+  async updateContactInfoItem(id: string, itemData: Partial<ContactInfo>): Promise<ContactInfo> {
+    const response = await fetch(`${API_URL}/contact-info/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(itemData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al actualizar el ítem de contacto.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    return response.json();
+  },
 
-async deleteContactInfoItem(id: string): Promise<void> {
-  const response = await fetch(`${API_URL}/contact-info/${id}`, {
-    method: 'DELETE',
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: 'Error al eliminar el ítem de contacto.' }));
-    throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+  async deleteContactInfoItem(id: string): Promise<void> {
+    const response = await fetch(`${API_URL}/contact-info/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error al eliminar el ítem de contacto.' }));
+      throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+    }
+    // DELETE usualmente no devuelve contenido, o devuelve un mensaje de éxito que no necesitamos procesar aquí.
   }
-  // DELETE usualmente no devuelve contenido, o devuelve un mensaje de éxito que no necesitamos procesar aquí.
-}
 
 };
 

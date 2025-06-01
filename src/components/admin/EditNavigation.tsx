@@ -1,172 +1,111 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { useWebsiteStore } from '../../store/useWebsiteStore';
-import { Menu, Plus, Trash, Edit, Check, X } from 'lucide-react';
+import { MenuItem as MenuItemType } from '../../types'; // Renombrado para evitar conflicto con el ícono Menu
+import { Menu as MenuIcon, Edit3, Save, XCircle } from 'lucide-react'; // Cambiado Edit a Edit3, Check a Save, X a XCircle
 
 const EditNavigation: React.FC = () => {
-  const { menuItems, updateMenuItems } = useWebsiteStore();
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingItem, setEditingItem] = useState<any>(null);
-  const [isAdding, setIsAdding] = useState(false);
-  const [newItem, setNewItem] = useState({ text: '', url: '' });
+  const { menuItems, updateMenuItem } = useWebsiteStore((state) => ({
+    menuItems: state.menuItems,
+    updateMenuItem: state.updateMenuItem,
+  }));
 
-  const handleEdit = (item: any) => {
-    setEditingId(item.id);
-    setEditingItem({ ...item });
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  // Estado para el texto que se está editando
+  const [currentEditText, setCurrentEditText] = useState<string>('');
+
+  const handleEdit = (item: MenuItemType) => {
+    setEditingItemId(item.id);
+    setCurrentEditText(item.text); // Cargar el texto actual en el input
   };
 
-  const handleSave = () => {
-    if (editingItem) {
-      const newMenuItems = menuItems.map(item =>
-        item.id === editingId ? editingItem : item
-      );
-      updateMenuItems(newMenuItems);
-      setEditingId(null);
-      setEditingItem(null);
+  const handleSave = async (id: string) => {
+    if (typeof updateMenuItem !== 'function') {
+      alert('Error: La función de actualización no está disponible.');
+      console.error("updateMenuItem no es una función en EditNavigation");
+      return;
+    }
+    if (!currentEditText.trim()) {
+        alert('El texto no puede estar vacío.');
+        return;
+    }
+
+    try {
+      // Solo actualizamos el texto. La URL y el ID no se modifican.
+      await updateMenuItem(id, { text: currentEditText });
+      setEditingItemId(null); // Salir del modo edición
+    } catch (error) {
+      console.error("Error al guardar el ítem de menú:", error);
+      alert("Error al guardar el ítem de menú. Revisa la consola.");
     }
   };
 
-  const handleAdd = () => {
-    if (newItem.text && newItem.url) {
-      const newMenuItems = [
-        ...menuItems,
-        {
-          id: Date.now().toString(),
-          ...newItem
-        }
-      ];
-      updateMenuItems(newMenuItems);
-      setNewItem({ text: '', url: '' });
-      setIsAdding(false);
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    const newMenuItems = menuItems.filter(item => item.id !== id);
-    updateMenuItems(newMenuItems);
+  const handleCancelEdit = () => {
+    setEditingItemId(null);
+    setCurrentEditText(''); // Limpiar el texto en edición
   };
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Editar Navegación</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Editar Textos de Navegación</h1>
       
       <div className="bg-white rounded-2xl shadow-custom p-6">
-        <div className="mb-4 flex justify-end">
-          <button
-            onClick={() => setIsAdding(true)}
-            className="flex items-center px-3 py-2 rounded-lg bg-primary-500 text-white hover:bg-primary-400"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            <span>Agregar Ítem</span>
-          </button>
-        </div>
-
-        {isAdding && (
-          <div className="border border-gray-200 rounded-xl p-4 mb-4">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Texto</label>
-                <input
-                  type="text"
-                  value={newItem.text}
-                  onChange={(e) => setNewItem({ ...newItem, text: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
-                <input
-                  type="text"
-                  value={newItem.url}
-                  onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-              
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => setIsAdding(false)}
-                  className="px-3 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleAdd}
-                  className="px-3 py-1 rounded-lg bg-primary-500 text-white hover:bg-primary-400"
-                >
-                  Agregar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         <div className="space-y-4">
-          {menuItems.map((item) => (
-            <div key={item.id} className="border border-gray-200 rounded-xl p-4">
-              {editingId === item.id ? (
-                <div className="space-y-4">
+          {(menuItems || []).map((item) => (
+            <div key={item.id} className={`border rounded-xl p-4 ${editingItemId === item.id ? 'bg-blue-50 border-blue-200' : 'border-gray-200'}`}>
+              {editingItemId === item.id ? (
+                // Formulario de Edición
+                <div className="space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Texto</label>
+                    <label htmlFor={`menuitem-text-${item.id}`} className="block text-sm font-medium text-gray-700 mb-1">
+                      Editar Texto para "{item.text}" (URL: {item.url})
+                    </label>
                     <input
                       type="text"
-                      value={editingItem.text}
-                      onChange={(e) => setEditingItem({ ...editingItem, text: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      id={`menuitem-text-${item.id}`}
+                      value={currentEditText}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setCurrentEditText(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
-                    <input
-                      type="text"
-                      value={editingItem.url}
-                      onChange={(e) => setEditingItem({ ...editingItem, url: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
-                  
                   <div className="flex justify-end space-x-2">
                     <button
-                      onClick={() => setEditingId(null)}
-                      className="px-3 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
+                      onClick={handleCancelEdit}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
                     >
-                      <X className="h-4 w-4" />
+                      <XCircle size={16} className="mr-1" /> Cancelar
                     </button>
                     <button
-                      onClick={handleSave}
-                      className="px-3 py-1 rounded-lg bg-primary-500 text-white hover:bg-primary-400"
+                      onClick={() => handleSave(item.id)}
+                      className="px-3 py-1.5 rounded-lg bg-primary-500 text-sm text-white hover:bg-primary-400 flex items-center"
                     >
-                      <Check className="h-4 w-4" />
+                      <Save size={16} className="mr-1" /> Guardar
                     </button>
                   </div>
                 </div>
               ) : (
+                // Vista de Ítem
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <Menu className="h-4 w-4 text-primary-500" />
-                    <span>{item.text}</span>
-                    <span className="text-sm text-gray-500">{item.url}</span>
+                  <div className="flex items-center space-x-3">
+                    <MenuIcon className="h-5 w-5 text-primary-500" />
+                    <div>
+                        <span className="font-medium text-gray-800">{item.text}</span>
+                        <p className="text-xs text-gray-500">URL: {item.url} (ID: {item.id})</p>
+                    </div>
                   </div>
-                  
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="p-1 rounded-full text-blue-600 hover:bg-blue-100"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="p-1 rounded-full text-red-600 hover:bg-red-100"
-                    >
-                      <Trash className="h-4 w-4" />
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="p-1.5 rounded-full text-blue-600 hover:bg-blue-100"
+                    title="Editar Texto"
+                  >
+                    <Edit3 size={18} />
+                  </button>
                 </div>
               )}
             </div>
           ))}
+          {(menuItems?.length === 0) && (
+            <p className="text-center py-4 text-gray-500">No hay ítems de menú para mostrar.</p>
+          )}
         </div>
       </div>
     </div>

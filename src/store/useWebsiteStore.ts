@@ -34,8 +34,7 @@ interface WebsiteStore extends WebsiteData {
   updateContactInfoItem: (id: string, itemData: Partial<ContactInfo>) => Promise<void>;
   deleteContactInfoItem: (id: string) => Promise<void>;
 
-
-  
+  updateMenuItem: (id: string, itemData: Partial<MenuItem>) => Promise<void>;
 }
 
 export const useWebsiteStore = create<WebsiteStore>((set) => ({
@@ -295,5 +294,18 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
     }
   },
 
+    updateMenuItem: async (id, itemData) => {
+    try {
+      const updatedItem = await databaseService.updateMenuItem(id, itemData);
+      set((state) => ({
+        menuItems: state.menuItems.map((item) =>
+          item.id === id ? { ...item, ...updatedItem } : item
+        ),
+      }));
+    } catch (error) {
+      console.error("Error updating menu item in store:", error);
+      throw error;
+    }
+  },
   
 }));

@@ -23,25 +23,29 @@ export const initialWebsiteData: WebsiteData = {
       id: '1',
       icon: 'phone',
       text: '+1 234 567 890',
-      showOnMobile: true,
+      show_on_mobile: true,
+      is_active: true
     },
     {
       id: '2',
       icon: 'mail',
       text: 'info@empresa.com',
-      showOnMobile: true,
+      show_on_mobile: true,
+      is_active: true
     },
     {
       id: '3',
       icon: 'map-pin',
       text: 'Calle Comercial 123, Ciudad',
-      showOnMobile: false,
+      show_on_mobile: false,
+      is_active: true
     },
     {
       id: '4',
       icon: 'clock',
       text: 'Lun-Vie: 9:00-18:00',
-      showOnMobile: false,
+      show_on_mobile: false,
+      is_active: true
     },
   ],
   menuItems: [

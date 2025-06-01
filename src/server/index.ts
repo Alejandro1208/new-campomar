@@ -719,34 +719,41 @@ app.get(
     })
 );
 
-app.post(
-    "/api/timeline-events",
-    handleAsync(async (req, res) => {
-        const { id, year, title, description } = req.body; // Asumimos que el id también se envía o se genera
-        const result = await pool.query(
-            "INSERT INTO timeline_events (id, year, title, description) VALUES ($1, $2, $3, $4) RETURNING *",
-            [id, year, title, description]
-        );
-        res.status(201).json(result.rows[0]);
-    })
-);
+app.post("/api/contact-info", handleAsync(async (req: Request, res: Response) => {
+  const { icon, text, show_on_mobile, is_active } = req.body;
+  const newId = uuidv4();
 
-app.put(
-    "/api/timeline-events/:id",
-    handleAsync(async (req, res) => {
-        const { id } = req.params;
-        const { year, title, description } = req.body;
-        const result = await pool.query(
-            "UPDATE timeline_events SET year = $1, title = $2, description = $3 WHERE id = $4 RETURNING *",
-            [year, title, description, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Timeline event not found" });
-        }
-        res.json(result.rows[0]);
-    })
-);
+  // Validación básica
+  if (!icon || !text) {
+    return res.status(400).json({ error: "Icono y texto son obligatorios." });
+  }
 
+  const result = await pool.query(
+    "INSERT INTO contact_info (id, icon, text, show_on_mobile, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    [newId, icon, text, show_on_mobile === undefined ? true : show_on_mobile, is_active === undefined ? true : is_active]
+  );
+  res.status(201).json(result.rows[0]);
+}));
+
+// En src/server/index.ts
+app.put("/api/contact-info/:id", handleAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const { icon, text, show_on_mobile, is_active } = req.body;
+
+  if (icon === undefined && text === undefined && show_on_mobile === undefined && is_active === undefined) {
+    return res.status(400).json({ error: "No hay datos para actualizar." });
+  }
+  const result = await pool.query(
+    "UPDATE contact_info SET icon = $1, text = $2, show_on_mobile = $3, is_active = $4 WHERE id = $5 RETURNING *",
+    [icon, text, show_on_mobile, is_active, id]
+  );
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({ error: "Ítem de contacto no encontrado." });
+  }
+  res.json(result.rows[0]);
+}));
 app.delete(
     "/api/timeline-events/:id",
     handleAsync(async (req, res) => {
@@ -773,33 +780,25 @@ app.get(
     })
 );
 
-app.post(
-    "/api/contact-info",
-    handleAsync(async (req, res) => {
-        const { id, icon, text, show_on_mobile } = req.body;
-        const result = await pool.query(
-            "INSERT INTO contact_info (id, icon, text, show_on_mobile) VALUES ($1, $2, $3, $4) RETURNING *",
-            [id, icon, text, show_on_mobile]
-        );
-        res.status(201).json(result.rows[0]);
-    })
-);
+app.post("/api/contact-info", handleAsync(async (req, res) => {
+    const { id, icon, text, show_on_mobile, is_active } = req.body; // Añadir is_active
+    const result = await pool.query(
+        "INSERT INTO contact_info (id, icon, text, show_on_mobile, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        [id, icon, text, show_on_mobile, (is_active === undefined) ? true : is_active] // Default a true si no se provee
+    );
+    res.status(201).json(result.rows[0]);
+}));
 
-app.put(
-    "/api/contact-info/:id",
-    handleAsync(async (req, res) => {
-        const { id } = req.params;
-        const { icon, text, show_on_mobile } = req.body;
-        const result = await pool.query(
-            "UPDATE contact_info SET icon = $1, text = $2, show_on_mobile = $3 WHERE id = $4 RETURNING *",
-            [icon, text, show_on_mobile, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Contact info not found" });
-        }
-        res.json(result.rows[0]);
-    })
-);
+// PUT /api/contact-info/:id
+app.put("/api/contact-info/:id", handleAsync(async (req, res) => {
+    const { id } = req.params;
+    const { icon, text, show_on_mobile, is_active } = req.body; // Añadir is_active
+    const result = await pool.query(
+        "UPDATE contact_info SET icon = $1, text = $2, show_on_mobile = $3, is_active = $4 WHERE id = $5 RETURNING *",
+        [icon, text, show_on_mobile, is_active, id]
+    );
+    res.json(result.rows[0]);
+}));
 
 app.delete(
     "/api/contact-info/:id",
@@ -816,12 +815,7 @@ app.delete(
     })
 );
 
-// --- Site Settings (MapLocation, general Logo) ---
-// Asumiendo una tabla 'site_settings' con una única fila id='default'
-// CREATE TABLE site_settings (id VARCHAR(255) PRIMARY KEY, map_embed_url TEXT, site_logo_url VARCHAR(255));
-// INSERT INTO site_settings (id, map_embed_url, site_logo_url) VALUES ('default', '', '');
-// Necesitarás crear esta tabla y su archivo .sql (ej. 12_site_settings.sql)
-
+// --- Site Settings (MapLocation, general Logo) --
 app.get(
     "/api/site-settings",
     handleAsync(async (req, res) => {

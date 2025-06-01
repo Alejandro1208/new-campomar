@@ -1,9 +1,9 @@
-// Data Types
 export interface ContactInfo {
   id: string;
   icon: string;
   text: string;
-  showOnMobile: boolean;
+  show_on_mobile: boolean;
+  is_active: boolean; 
 }
 
 export interface MenuItem {
@@ -68,7 +68,7 @@ export interface BusinessHours {
   hours: string;
 }
 
-export interface SiteSettingsPayload { // <--- Añade 'export'
+export interface SiteSettingsPayload { 
   mapLocation?: MapLocation;
   logo?: string;
 }
@@ -90,8 +90,16 @@ export interface SiteSettingsPayload {
 export interface User {
   id: string;
   username: string;
-  password: string; // In a real app, this would be hashed
+  password: string; 
   name: string;
+}
+
+
+export interface ContactInfo { 
+  id: string;
+  icon: string;
+  text: string;
+  show_on_mobile: boolean;
 }
 
 // State Types
@@ -116,7 +124,7 @@ export interface AuthState {
   login: (username: string, password: string) => boolean;
   logout: () => void;
 }
-export interface Image { // <--- AÑADE ESTA INTERFAZ Y EXPÓRTALA
+export interface Image { 
   id: string;
   src: string;
   alt: string;
@@ -126,5 +134,5 @@ export interface CompanyInfo {
   id?: string;
   title: string;
   description: string;
-  images: Image[]; // <--- USA EL TIPO Image AQUÍ
+  images: Image[]; 
 }
