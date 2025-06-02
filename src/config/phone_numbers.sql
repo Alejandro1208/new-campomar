@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS phone_numbers (
-id VARCHAR(255) PRIMARY KEY,
-number VARCHAR(255),
-label VARCHAR(255)
+  id VARCHAR(255) PRIMARY KEY, -- El ID es un VARCHAR y la clave primaria
+  number VARCHAR(255),
+  label VARCHAR(255)
 );
 
 INSERT INTO phone_numbers (id, number, label) VALUES

@@ -1,30 +1,39 @@
+// src/components/Footer.tsx
 import React from 'react';
-import { useWebsiteStore } from '../store/useWebsiteStore'; // Importa el store
-import { Facebook, Twitter, Instagram, Linkedin, Youtube, Phone, Mail, MapPin, Clock } from 'lucide-react'; // Asumo que sigues usando estos íconos
+import { useWebsiteStore } from '../store/useWebsiteStore';
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, Phone, Clock, Mail, MapPin } from 'lucide-react'; // Asegúrate de tener todos los íconos que necesites
 
+// Mapeo de iconos para redes sociales y otros
 const iconComponents: { [key: string]: React.ElementType } = {
   facebook: Facebook,
-  twitter: Twitter,
   instagram: Instagram,
   linkedin: Linkedin,
+  twitter: Twitter,
   youtube: Youtube,
-  phone: Phone,
-  mail: Mail,
-  'map-pin': MapPin, // Como lo usas en TopBar
-  clock: Clock,      // Como lo usas en TopBar
+  // Puedes añadir más iconos de redes aquí si los usas
+  phone: Phone,    // Para los números de teléfono
+  clock: Clock,    // Para el horario de atención
+  // mail: Mail,   // Descomenta si tienes un email específico para el footer en otro estado
+  // 'map-pin': MapPin, // Descomenta si tienes una dirección específica para el footer
 };
 
 const Footer: React.FC = () => {
   const { 
-    contactInfo, 
-    menuItems, 
-    socialMedia, 
-    logo // <--- Obtener el logo del store
+    phoneNumbers,      // Para los números de teléfono del footer
+    businessHours,     // Para el horario de atención del footer (espera un array)
+    socialMedia,       // Para las redes sociales
+    logo,
+    menuItems,
+    footerShortDescription, // Para el texto bajo el logo en el footer
+    footerCopyright    // Para el texto de copyright
   } = useWebsiteStore((state) => ({
-    contactInfo: state.contactInfo,
-    menuItems: state.menuItems,
+    phoneNumbers: state.phoneNumbers,
+    businessHours: state.businessHours,
     socialMedia: state.socialMedia,
-    logo: state.logo, // <--- Añade esto
+    logo: state.logo,
+    menuItems: state.menuItems,
+    footerShortDescription: state.footerShortDescription,
+    footerCopyright: state.footerCopyright,
   }));
 
   // Construir la URL completa para el logo
@@ -40,19 +49,17 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Columna 1: Logo y Descripción Corta */}
           <div className="space-y-4">
-            {/* --- LOGO AQUÍ --- */}
             {fullLogoUrl ? (
               <a href="#home" className="inline-block">
-                <img src={fullLogoUrl} alt="Logo de la Empresa" className="h-10 w-auto" /> {/* Ajusta la altura */}
+                <img src={fullLogoUrl} alt="Logo de la Empresa" className="h-10 w-auto" />
               </a>
             ) : (
-              <h3 className="text-xl font-semibold text-white">CompanyName</h3> // Fallback si no hay logo
+              <h3 className="text-xl font-semibold text-white">TuEmpresa</h3> 
             )}
-            {/* --- FIN LOGO --- */}
-            <p className="text-sm">
-              Ofreciendo soluciones de calidad para nuestros clientes desde hace más de 20 años.
-              Comprometidos con la excelencia y la innovación.
-            </p>
+            {/* Mostrar la descripción corta del footer */}
+            {footerShortDescription && (
+              <p className="text-sm">{footerShortDescription}</p>
+            )}
           </div>
 
           {/* Columna 2: Enlaces Rápidos (Menú) */}
@@ -72,19 +79,24 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Columna 3: Contacto */}
+          {/* Columna 3: Contacto (Usando phoneNumbers y businessHours) */}
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">Contacto</h4>
             <ul className="space-y-3">
-              {(contactInfo || []).filter(info => info.is_active).map(info => { // Filtra por is_active
-                const Icon = iconComponents[info.icon];
-                return (
-                  <li key={info.id} className="flex items-start text-sm">
-                    {Icon && <Icon className="h-5 w-5 mr-3 mt-0.5 text-primary-400 flex-shrink-0" />}
-                    <span>{info.text}</span>
-                  </li>
-                );
-              })}
+              {/* Renderizar Números de Teléfono */}
+              {(phoneNumbers || []).map(phone => (
+                <li key={phone.id} className="flex items-start text-sm">
+                  <Phone className="h-5 w-5 mr-3 mt-0.5 text-primary-400 flex-shrink-0" />
+                  <span>{phone.number}{phone.label && ` (${phone.label})`}</span>
+                </li>
+              ))}
+              {/* Renderizar Horario de Atención */}
+              {(businessHours || []).map(bh => ( // Asumiendo que businessHours es un array
+                <li key={bh.id} className="flex items-start text-sm">
+                  <Clock className="h-5 w-5 mr-3 mt-0.5 text-primary-400 flex-shrink-0" />
+                  <span>{bh.days}: {bh.hours}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -93,7 +105,7 @@ const Footer: React.FC = () => {
             <h4 className="text-lg font-semibold text-white mb-4">Síguenos</h4>
             <div className="flex space-x-4">
               {(socialMedia || []).map(social => {
-                const Icon = iconComponents[social.icon.toLowerCase()]; // Asumiendo que social.icon es 'facebook', 'twitter', etc.
+                const Icon = iconComponents[social.icon.toLowerCase()];
                 return (
                   <a 
                     key={social.id} 
@@ -113,7 +125,7 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-700 pt-8 text-center">
           <p className="text-sm">
-            &copy; {currentYear} Tu Nombre de Empresa. Todos los derechos reservados.
+            &copy; {currentYear} {footerCopyright || 'Tu Nombre de Empresa. Todos los derechos reservados.'}
           </p>
         </div>
       </div>

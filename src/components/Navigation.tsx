@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
+import { Link as RouterLink } from 'react-router-dom';
 import { useWebsiteStore } from '../store/useWebsiteStore';
 import { Menu, X, LogIn } from 'lucide-react';
 
@@ -104,6 +105,24 @@ const Navigation: React.FC = () => {
               </ScrollLink>
             ))}
           </div>
+                      {/* BOTONES DE INGRESAR Y REGISTRARSE - ESCRITORIO */}
+            <div className="ml-4 flex items-center space-x-3"> {/* ml-4 para separarlos de los links */}
+              <RouterLink
+                to="/admin" // Ruta a tu login de admin
+                className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 border ${textColorClass} border-primary-500 hover:bg-primary-500 ${hoverTextColorClass}`}
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Ingresar
+              </RouterLink>
+              {/* Si quieres mantener el botón de registrarse, aunque dijiste que no lo usabas: */}
+              {/* <RouterLink
+                to="/register" // Cambia esta ruta si es necesario
+                className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-primary-500 text-white hover:bg-primary-400`}
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                Registrarse
+              </RouterLink> */}
+            </div>
         </div>
       </div>
 
@@ -132,6 +151,26 @@ const Navigation: React.FC = () => {
               </ScrollLink>
             ))}
           </div>
+                      {/* BOTONES DE INGRESAR Y REGISTRARSE - MÓVIL */}
+            <div className="pt-3 mt-3 border-t border-gray-200">
+              <RouterLink
+                to="/admin"
+                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${textColorClass} ${hoverBgClass} ${hoverTextColorClass}`}
+                onClick={toggleMenu}
+              >
+                <LogIn className="h-5 w-5 mr-2 inline-block" />
+                Ingresar
+              </RouterLink>
+              {/* Si quieres mantener el botón de registrarse: */}
+              {/* <RouterLink
+                to="/register"
+                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${textColorClass} ${hoverBgClass} ${hoverTextColorClass}`}
+                onClick={toggleMenu}
+              >
+                <UserPlus className="h-5 w-5 mr-2 inline-block" />
+                Registrarse
+              </RouterLink> */}
+            </div>
         </div>
       )}
     </nav>

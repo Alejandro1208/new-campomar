@@ -494,11 +494,20 @@ app.get(
 
 app.post(
     "/api/phone-numbers",
-    handleAsync(async (req, res) => {
-        const { number, label } = req.body; // Corregido: description -> label
+    handleAsync(async (req: Request, res: Response) => {
+        const { number, label } = req.body;
+        const newId = uuidv4(); // <--- 1. Genera un nuevo ID único
+
+        // Validación básica (opcional pero recomendada)
+        if (!number) {
+            return res.status(400).json({ error: 'El campo "number" es obligatorio.' });
+        }
+
         const result = await pool.query(
-            "INSERT INTO phone_numbers (number, label) VALUES ($1, $2) RETURNING *",
-            [number, label]
+            // <--- 2. Añade 'id' a la lista de columnas y $3 a los valores
+            "INSERT INTO phone_numbers (id, number, label) VALUES ($1, $2, $3) RETURNING *",
+            // <--- 3. Pasa newId como el primer valor
+            [newId, number, label]
         );
         res.status(201).json(result.rows[0]);
     })
@@ -941,26 +950,35 @@ app.delete(
     })
 );
 
-// --- Site Settings (MapLocation, general Logo) --
 app.get(
     "/api/site-settings",
     handleAsync(async (req, res) => {
         const result = await pool.query(
-            "SELECT map_embed_url, site_logo_url FROM site_settings WHERE id = 'default'"
+            // SELECCIONA LOS NUEVOS CAMPOS
+            "SELECT map_embed_url, site_logo_url, footer_short_description, footer_copyright FROM site_settings WHERE id = 'default'"
         );
         if (result.rows.length > 0) {
             res.json({
                 mapLocation: { embedUrl: result.rows[0].map_embed_url },
                 logo: result.rows[0].site_logo_url,
+                footerShortDescription: result.rows[0].footer_short_description, // DEVUELVE ESTE CAMPO
+                footerCopyright: result.rows[0].footer_copyright            // DEVUELVE ESTE CAMPO
             });
         } else {
-            res.status(404).json({ error: "Site settings not found" });
+            // Considera devolver valores por defecto si no se encuentran settings
+            res.status(404).json({ 
+                error: "Site settings not found",
+                mapLocation: { embedUrl: '' },
+                logo: '',
+                footerShortDescription: '',
+                footerCopyright: ''
+            });
         }
     })
 );
 
 app.put("/api/site-settings", handleAsync(async (req: Request, res: Response) => {
-    const { mapLocation, logo } = req.body; // 'logo' aquí será la filePath del logo subido
+    const { mapLocation, logo, footerShortDescription, footerCopyright } = req.body; // Ya los recibes
 
     const fieldsToUpdate = [];
     const values = [];
@@ -970,24 +988,36 @@ app.put("/api/site-settings", handleAsync(async (req: Request, res: Response) =>
         fieldsToUpdate.push(`map_embed_url = $${paramCount++}`);
         values.push(mapLocation.embedUrl);
     }
-    if (logo !== undefined) { // Si se envía un nuevo logo (filePath)
+    if (logo !== undefined) { 
         fieldsToUpdate.push(`site_logo_url = $${paramCount++}`);
-        values.push(logo); // 'logo' es la ruta, ej. /uploads/site_logo/site-logo-123.png
+        values.push(logo);
+    }
+    // AÑADE LOS NUEVOS CAMPOS A LA ACTUALIZACIÓN
+    if (footerShortDescription !== undefined) {
+        fieldsToUpdate.push(`footer_short_description = $${paramCount++}`);
+        values.push(footerShortDescription);
+    }
+    if (footerCopyright !== undefined) {
+        fieldsToUpdate.push(`footer_copyright = $${paramCount++}`);
+        values.push(footerCopyright);
     }
 
     if (fieldsToUpdate.length === 0) {
         return res.status(400).json({ error: "No valid fields provided for update" });
     }
 
-    values.push("default"); // WHERE id = 'default' en la tabla site_settings
+    values.push("default"); // WHERE id = 'default'
 
-    const queryText = `UPDATE site_settings SET ${fieldsToUpdate.join(", ")} WHERE id = $${paramCount} RETURNING map_embed_url, site_logo_url`;
+    // ASEGÚRATE DE QUE RETURNING DEVUELVA TODOS LOS CAMPOS
+    const queryText = `UPDATE site_settings SET ${fieldsToUpdate.join(", ")} WHERE id = $${paramCount} RETURNING map_embed_url, site_logo_url, footer_short_description, footer_copyright`;
 
     const result = await pool.query(queryText, values);
     if (result.rows.length > 0) {
         res.json({
             mapLocation: { embedUrl: result.rows[0].map_embed_url },
-            logo: result.rows[0].site_logo_url // Devuelve la nueva URL del logo
+            logo: result.rows[0].site_logo_url,
+            footerShortDescription: result.rows[0].footer_short_description, // DEVUELVE EL CAMPO ACTUALIZADO
+            footerCopyright: result.rows[0].footer_copyright            // DEVUELVE EL CAMPO ACTUALIZADO
         });
     } else {
         res.status(404).json({ error: "Site settings not found to update (id: default)" });

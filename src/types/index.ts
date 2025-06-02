@@ -98,14 +98,6 @@ export interface User {
   name: string;
 }
 
-
-export interface ContactInfo { 
-  id: string;
-  icon: string;
-  text: string;
-  show_on_mobile: boolean;
-}
-
 // State Types
 export interface WebsiteData {
   contactInfo: ContactInfo[];

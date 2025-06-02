@@ -244,17 +244,6 @@ export const databaseService = {
     }
     return response.json();
   },
-
-  async getSiteSettings(): Promise<SiteSettingsResponse> {
-    const response = await fetch(`${API_URL}/site-settings`);
-    if (!response.ok) {
-      console.warn('Error fetching site settings, returning defaults.');
-      // Devuelve valores por defecto para que el store no falle completamente
-      return { mapLocation: { embedUrl: '' }, logo: '' };
-    }
-    return response.json();
-  },
-
   async updateSiteSettings(data: SiteSettingsPayload): Promise<SiteSettingsResponse> {
     const response = await fetch(`${API_URL}/site-settings`, {
       method: 'PUT',
@@ -413,7 +402,27 @@ export const databaseService = {
     });
     if (!response.ok) throw new Error('Error deleting social media link');
   },
-  // Removed duplicate getBusinessHours to fix duplicate identifier error
+  async getSiteSettings(): Promise<SiteSettingsResponse> {
+  const response = await fetch(`${API_URL}/site-settings`);
+  if (!response.ok) {
+    console.warn('Error fetching site settings, returning defaults.');
+    // ASEGÚRATE DE QUE LOS DEFAULTS TAMBIÉN INCLUYAN LOS CAMPOS DEL FOOTER
+    return { 
+        mapLocation: { embedUrl: '' }, 
+        logo: '', 
+        footerShortDescription: 'Default Desc', // <---
+        footerCopyright: 'Default Copyright'   // <---
+    };
+  }
+  const data = await response.json();
+  // Si el backend devuelve los nombres con guion bajo (snake_case) de la BD:
+  return {
+      mapLocation: data.mapLocation || { embedUrl: data.map_embed_url || '' },
+      logo: data.logo || data.site_logo_url || '',
+      footerShortDescription: data.footerShortDescription || data.footer_short_description || '', // <---
+      footerCopyright: data.footerCopyright || data.footer_copyright || ''                // <---
+  };
+}
 
 };
 

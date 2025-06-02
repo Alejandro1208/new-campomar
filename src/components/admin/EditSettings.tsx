@@ -1,26 +1,25 @@
+// src/components/admin/EditSettings.tsx
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useWebsiteStore } from '../../store/useWebsiteStore';
 import { SiteSettingsPayload } from '../../types'; // Asegúrate que este tipo incluya todos los campos de site_settings
-import { Save, ImageUp, FileText, Type, AlertTriangle } from 'lucide-react';
+import { Save, ImageUp, FileText, AlertTriangle } from 'lucide-react'; // Removí 'Type' ya que no se usaba
 
 const EditSettings: React.FC = () => {
   const { 
-    logo, 
-    footerShortDescription,
-    footerCopyright,
-    // Asumimos una acción genérica para guardar todos los settings.
-    // Si tienes acciones separadas, necesitarás llamarlas individualmente o coordinarlas.
-    updateSiteSettingsInStore, // Renombrada para claridad, debe existir en tu store
-    mapLocation // Lo necesitamos para no borrarlo al guardar otros settings
+    logo,                   // Logo actual del store (string de la ruta)
+    footerShortDescription, // Descripción corta actual del store
+    footerCopyright,        // Copyright actual del store
+    updateSiteSettings,     // Esta es la acción que actualiza los settings en el store y backend
+    // No necesitamos mapLocation aquí ya que este componente no lo edita directamente
   } = useWebsiteStore((state) => ({
     logo: state.logo,
     footerShortDescription: state.footerShortDescription,
     footerCopyright: state.footerCopyright,
-    updateSiteSettingsInStore: state.updateSiteSettingsInStore, // Usa el nombre correcto de la acción en tu store
-    mapLocation: state.mapLocation, // Para enviar de vuelta y no perderlo
+    updateSiteSettings: state.updateSiteSettings, // Asegúrate que este sea el nombre correcto de la acción en tu store
+    // mapLocation: state.mapLocation, // No es necesario traerlo si no se modifica aquí
   }));
 
-  // Estados para el formulario
+  // Estados locales para el formulario
   const [selectedLogoFile, setSelectedLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [editedFooterDesc, setEditedFooterDesc] = useState<string>('');
@@ -32,13 +31,15 @@ const EditSettings: React.FC = () => {
   useEffect(() => {
     // Inicializar el preview del logo y los campos de texto con los valores del store
     if (logo) {
-      setLogoPreview(logo.startsWith('http') ? logo : `http://localhost:3001${logo}`);
+      // Asumimos que el logo es una ruta relativa y el backend sirve los archivos desde la raíz o una carpeta pública.
+      // Si el logo ya es una URL completa, no necesitas `http://localhost:3001`.
+      setLogoPreview(logo.startsWith('http') || logo.startsWith('/') ? logo : `http://localhost:3001${logo}`);
     } else {
       setLogoPreview(null);
     }
     setEditedFooterDesc(footerShortDescription || '');
     setEditedCopyright(footerCopyright || '');
-  }, [logo, footerShortDescription, footerCopyright]);
+  }, [logo, footerShortDescription, footerCopyright]); // Dependencias para actualizar el form si cambian en el store
 
   const handleLogoFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMessage(null);
@@ -47,42 +48,49 @@ const EditSettings: React.FC = () => {
       setSelectedLogoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
+        setLogoPreview(reader.result as string); // Vista previa local del archivo seleccionado
       };
       reader.readAsDataURL(file);
     } else {
       setSelectedLogoFile(null);
-      setLogoPreview(logo ? (logo.startsWith('http') ? logo : `http://localhost:3001${logo}`) : null);
+      // Si se deselecciona, vuelve a mostrar el logo actual del store
+      setLogoPreview(logo ? (logo.startsWith('http') || logo.startsWith('/') ? logo : `http://localhost:3001${logo}`) : null);
     }
   };
 
   const handleSaveAllSettings = async () => {
-    if (typeof updateSiteSettingsInStore !== 'function') {
+    if (typeof updateSiteSettings !== 'function') {
       setMessage({ type: 'error', text: 'Error: La función para guardar la configuración no está disponible.' });
-      console.error("updateSiteSettingsInStore no es una función");
+      console.error("updateSiteSettings no es una función en EditSettings.tsx");
       return;
     }
 
     setIsSaving(true);
     setMessage(null);
-    let finalLogoPath = logo; // Inicia con el logo actual del store
 
     try {
-      const settingsPayload: SiteSettingsPayload & { logoFile?: File | null } = {
-        mapLocation: mapLocation, // Mantener el mapLocation actual del store
-        logo: logo, // El logo actual del store (la acción del store lo cambiará si hay un selectedLogoFile)
+      // Preparamos el payload solo con lo que este formulario gestiona.
+      // La acción `updateSiteSettings` en el store se encargará de preservar `mapLocation`.
+      const settingsPayload: Partial<SiteSettingsPayload> & { logoFile?: File | null } = {
+        // El logo actual (string path) no se envía si se va a subir uno nuevo,
+        // la acción del store puede decidir tomar el 'logo' actual del store si 'logoFile' no está.
+        // Si 'selectedLogoFile' existe, se pasará como 'logoFile'.
+        // Si no, la acción del store usará el 'logo' que ya tiene o el que se le pase aquí.
+        // Para simplificar, dejaremos que la acción del store resuelva el 'logo' final.
         footerShortDescription: editedFooterDesc,
         footerCopyright: editedCopyright,
-        // Añadimos el archivo para que la acción del store decida si subirlo y usar la nueva ruta
-        ...(selectedLogoFile && { logoFile: selectedLogoFile }) 
       };
-      
-      await updateSiteSettingsInStore(settingsPayload); // Esta acción del store debe ser robusta
+
+      if (selectedLogoFile) {
+        settingsPayload.logoFile = selectedLogoFile;
+      }
+      // Si no se seleccionó un nuevo archivo, pero se quieren guardar solo los textos,
+      // la acción updateSiteSettings en el store debería usar el `logo` existente del `get()`.
+
+      await updateSiteSettings(settingsPayload);
 
       setMessage({ type: 'success', text: 'Configuración guardada exitosamente.' });
-      setSelectedLogoFile(null); // Limpiar el archivo seleccionado
-      // El useEffect se encargará de actualizar el logoPreview con el nuevo logo del store si cambió
-
+      setSelectedLogoFile(null); // Limpiar el archivo seleccionado, el useEffect actualizará el preview
     } catch (error: any) {
       console.error("Error al guardar la configuración:", error);
       setMessage({ type: 'error', text: error.message || 'Error al guardar la configuración.' });
@@ -117,7 +125,7 @@ const EditSettings: React.FC = () => {
               id="siteLogoFile" 
               accept="image/png, image/jpeg, image/webp, image/svg+xml"
               onChange={handleLogoFileChange}
-              className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
             />
           </div>
 
@@ -156,20 +164,20 @@ const EditSettings: React.FC = () => {
               rows={3}
               value={editedFooterDesc}
               onChange={(e) => setEditedFooterDesc(e.target.value)}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
               placeholder="Una breve descripción sobre la empresa para el pie de página..."
             />
           </div>
           <div>
             <label htmlFor="copyright" className="block text-sm font-medium text-gray-700">
-              Texto de Copyright (El año se añade automáticamente. Ej: "MiEmpresa Inc.")
+              Texto de Copyright (Ej: "MiEmpresa Inc.")
             </label>
             <input
               type="text"
               id="copyright"
               value={editedCopyright}
               onChange={(e) => setEditedCopyright(e.target.value)}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
               placeholder="Ej: Nombre de tu Empresa. Todos los derechos reservados."
             />
           </div>
