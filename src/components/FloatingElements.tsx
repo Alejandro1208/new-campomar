@@ -1,8 +1,8 @@
 // src/components/FloatingElements.tsx
 import React, { useState } from 'react';
 import { useWebsiteStore } from '../store/useWebsiteStore';
-// IMPORTA TODOS LOS ÍCONOS QUE NECESITES PARA LAS REDES SOCIALES
-import { MessageCircle, Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon } from 'lucide-react';
+// Importa los íconos de redes sociales que necesites, pero MessageCircle ya no es necesario para WhatsApp
+import { Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon } from 'lucide-react';
 
 // Mapeo de los valores de social.icon a los componentes de ícono
 const socialIconComponents: { [key: string]: React.ElementType } = {
@@ -11,8 +11,7 @@ const socialIconComponents: { [key: string]: React.ElementType } = {
   twitter: Twitter,
   linkedin: Linkedin,
   youtube: Youtube,
-  // Puedes añadir más aquí si tienes otros tipos de redes sociales
-  default: LinkIcon, // Un ícono por defecto si no se encuentra uno específico
+  default: LinkIcon, // Ícono por defecto
 };
 
 const FloatingElements: React.FC = () => {
@@ -20,7 +19,11 @@ const FloatingElements: React.FC = () => {
   const phoneNumbers = useWebsiteStore((state) => state.phoneNumbers);
   const [socialExpanded, setSocialExpanded] = useState(false);
 
-  const whatsappNumber = phoneNumbers[0]?.number.replace(/\s+/g, '') || '';
+  // Obtiene el primer número de teléfono y lo formatea
+  const formatPhoneNumberForWhatsApp = (numberStr: string) => {
+    return numberStr.replace(/\D/g, '');
+  };
+  const whatsappNumber = phoneNumbers[0] ? formatPhoneNumberForWhatsApp(phoneNumbers[0].number) : '';
 
   const toggleSocial = () => {
     setSocialExpanded(!socialExpanded);
@@ -28,10 +31,9 @@ const FloatingElements: React.FC = () => {
 
   return (
     <div className="fixed right-6 bottom-6 z-40 flex flex-col items-end space-y-4">
-      {/* Social Media */}
+      {/* Social Media Expansible */}
       <div className="flex flex-col items-end space-y-2">
         {socialExpanded && socialMedia.map((social) => {
-          // Obtiene el componente de ícono correspondiente, o el por defecto
           const IconComponent = socialIconComponents[social.icon.toLowerCase()] || socialIconComponents.default;
           return (
             <a
@@ -41,7 +43,7 @@ const FloatingElements: React.FC = () => {
               rel="noopener noreferrer"
               className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-500 text-white shadow-custom hover:bg-primary-400 transition-all duration-200 animate-float"
               style={{ animationDelay: `${parseInt(social.id) * 0.1}s` }}
-              aria-label={social.name} // Es bueno para la accesibilidad
+              aria-label={social.name}
             >
               <IconComponent className="h-5 w-5" />
             </a>
@@ -51,7 +53,7 @@ const FloatingElements: React.FC = () => {
         <button
           onClick={toggleSocial}
           className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-400 text-white shadow-custom hover:bg-primary-300 transition-all duration-200"
-          aria-expanded={socialExpanded} // Para accesibilidad
+          aria-expanded={socialExpanded}
           aria-label={socialExpanded ? "Cerrar redes sociales" : "Abrir redes sociales"}
         >
           {socialExpanded ? (
@@ -61,17 +63,21 @@ const FloatingElements: React.FC = () => {
           )}
         </button>
       </div>
-      
-      {/* WhatsApp Button */}
-      <a
-        href={`https://wa.me/${whatsappNumber}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-center w-14 h-14 rounded-full bg-green-500 text-white shadow-custom hover:bg-green-600 transition-all duration-200"
-        aria-label="Contactar por WhatsApp"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </a>
+      {whatsappNumber && ( 
+        <a
+          href={`https://wa.me/${whatsappNumber}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-green-500 text-white shadow-custom hover:bg-green-600 transition-all duration-200"
+          aria-label="Contactar por WhatsApp"
+        >
+          <img 
+            src="/icons/whatsapp-logo.svg"
+            alt="WhatsApp" 
+            className="h-7 w-7"
+          />
+        </a>
+      )}
     </div>
   );
 };

@@ -1,31 +1,29 @@
 // src/components/Footer.tsx
 import React from 'react';
 import { useWebsiteStore } from '../store/useWebsiteStore';
-import { Facebook, Instagram, Linkedin, Twitter, Youtube, Phone, Clock, Mail, MapPin } from 'lucide-react'; // Asegúrate de tener todos los íconos que necesites
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, Clock, Mail, MapPin } from 'lucide-react'; // Phone ya no es necesario si siempre usamos el logo de WhatsApp para teléfonos
 
-// Mapeo de iconos para redes sociales y otros
+// Mapeo de iconos para redes sociales y otros (excluimos 'phone' si siempre usamos el logo de WhatsApp para teléfonos)
 const iconComponents: { [key: string]: React.ElementType } = {
   facebook: Facebook,
   instagram: Instagram,
   linkedin: Linkedin,
   twitter: Twitter,
   youtube: Youtube,
-  // Puedes añadir más iconos de redes aquí si los usas
-  phone: Phone,    // Para los números de teléfono
   clock: Clock,    // Para el horario de atención
-  // mail: Mail,   // Descomenta si tienes un email específico para el footer en otro estado
-  // 'map-pin': MapPin, // Descomenta si tienes una dirección específica para el footer
+  // mail: Mail,   // Si decides añadir un email específico al footer en otro estado
+  // 'map-pin': MapPin, // Si decides añadir una dirección específica al footer
 };
 
 const Footer: React.FC = () => {
   const { 
-    phoneNumbers,      // Para los números de teléfono del footer
-    businessHours,     // Para el horario de atención del footer (espera un array)
-    socialMedia,       // Para las redes sociales
+    phoneNumbers,
+    businessHours,
+    socialMedia,
     logo,
     menuItems,
-    footerShortDescription, // Para el texto bajo el logo en el footer
-    footerCopyright    // Para el texto de copyright
+    footerShortDescription,
+    footerCopyright
   } = useWebsiteStore((state) => ({
     phoneNumbers: state.phoneNumbers,
     businessHours: state.businessHours,
@@ -36,12 +34,19 @@ const Footer: React.FC = () => {
     footerCopyright: state.footerCopyright,
   }));
 
-  // Construir la URL completa para el logo
   const fullLogoUrl = logo && logo.startsWith('/') 
                       ? `http://localhost:3001${logo}` 
                       : logo;
 
   const currentYear = new Date().getFullYear();
+
+  // Función para limpiar el número de teléfono para WhatsApp
+  const formatPhoneNumberForWhatsApp = (numberStr: string) => {
+    // Elimina todos los caracteres que no sean dígitos
+    // Si tus números ya están en formato internacional (ej. 54911...) esta limpieza es usualmente suficiente.
+    // Si empiezan con '+', el \D lo quitará.
+    return numberStr.replace(/\D/g, '');
+  };
 
   return (
     <footer id="footer" className="bg-gray-900 text-gray-300 pt-12 pb-8">
@@ -56,7 +61,6 @@ const Footer: React.FC = () => {
             ) : (
               <h3 className="text-xl font-semibold text-white">TuEmpresa</h3> 
             )}
-            {/* Mostrar la descripción corta del footer */}
             {footerShortDescription && (
               <p className="text-sm">{footerShortDescription}</p>
             )}
@@ -83,20 +87,29 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">Contacto</h4>
             <ul className="space-y-3">
-              {/* Renderizar Números de Teléfono */}
-              {(phoneNumbers || []).map(phone => (
-                <li key={phone.id} className="flex items-start text-sm">
-                  <Phone className="h-5 w-5 mr-3 mt-0.5 text-primary-400 flex-shrink-0" />
-                  <span>{phone.number}{phone.label && ` (${phone.label})`}</span>
-                </li>
-              ))}
-              {/* Renderizar Horario de Atención */}
-              {(businessHours || []).map(bh => ( // Asumiendo que businessHours es un array
-                <li key={bh.id} className="flex items-start text-sm">
-                  <Clock className="h-5 w-5 mr-3 mt-0.5 text-primary-400 flex-shrink-0" />
-                  <span>{bh.days}: {bh.hours}</span>
-                </li>
-              ))}
+              {/* Renderizar Números de Teléfono como enlaces de WhatsApp */}
+              {(phoneNumbers || []).map(phone => {
+                const whatsappNumber = formatPhoneNumberForWhatsApp(phone.number);
+                return (
+                  <li key={phone.id} className="flex items-start text-sm">
+                    {/* Usamos tu logo personalizado de WhatsApp */}
+                    <img 
+                      src="/icons/whatsapp-logo.svg" // Ruta a tu logo de WhatsApp
+                      alt="WhatsApp" 
+                      className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" // Ajusta el tamaño según necesites
+                    /> 
+                    <a 
+                      href={`https://wa.me/${whatsappNumber}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="hover:underline"
+                      aria-label={`Contactar por WhatsApp al número ${phone.number}`}
+                    >
+                      {phone.number}{phone.label && ` (${phone.label})`}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -120,6 +133,15 @@ const Footer: React.FC = () => {
                 );
               })}
             </div>
+            <h4 className="text-lg font-semibold text-white mb-4 pt-4">Horario de atención:</h4>
+            <ul>
+              {(businessHours || []).map(bh => (
+                <li key={bh.id} className="flex items-start text-sm">
+                  <Clock className="h-5 w-5 mr-3 mt-0.5 text-primary-400 flex-shrink-0" />
+                  <span>{bh.days}: {bh.hours}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
