@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import pkg from "pg";
 const { Pool } = pkg;
+import bcrypt from 'bcrypt';
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -48,6 +49,45 @@ const handleAsync = (
         });
     };
 };
+
+app.post("/api/auth/admin-login", handleAsync(async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: "Usuario y contraseña son requeridos." });
+    }
+
+    const result = await pool.query("SELECT * FROM admin_users WHERE username = $1", [username]);
+
+    if (result.rows.length === 0) {
+        console.log(`Intento de login fallido (usuario no encontrado): ${username}`);
+        return res.status(401).json({ error: "Credenciales inválidas." });
+    }
+
+    const user = result.rows[0];
+
+    // Comparar la contraseña enviada con el hash almacenado
+    const passwordIsValid = await bcrypt.compare(password, user.password_hash);
+
+    if (passwordIsValid) {
+        console.log(`Login exitoso para admin: ${user.username}`);
+        // En una implementación real, generarías un JWT aquí
+        // y lo enviarías de vuelta al cliente.
+        // Ejemplo: const token = jwt.sign({ id: user.id, username: user.username }, 'TU_SUPER_SECRETO_JWT', { expiresIn: '1h' });
+        res.json({ 
+            message: "Login exitoso",
+            user: { 
+                id: user.id, 
+                username: user.username, 
+                name: user.name 
+            }
+            // token: token // <--- Enviarías el token
+        });
+    } else {
+        console.log(`Intento de login fallido (contraseña incorrecta) para: ${username}`);
+        return res.status(401).json({ error: "Credenciales inválidas." });
+    }
+}));
 
 
 const UPLOAD_DIR_PRODUCT_LOGOS = "public/uploads/product_logos";

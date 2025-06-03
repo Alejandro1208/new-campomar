@@ -117,7 +117,7 @@ export interface WebsiteData {
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>; // <--- CAMBIADO A Promise<boolean>
   logout: () => void;
 }
 export interface Image { 
