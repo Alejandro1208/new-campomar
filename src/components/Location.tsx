@@ -7,8 +7,8 @@ const Location: React.FC = () => {
   return (
     <section id="location" className="py-16 bg-gray-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-primary-500 mb-12">Visit Us</h2>
-        
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-primary-500 mb-12">Visita nuestro local</h2>
+
         <div className="rounded-2xl overflow-hidden shadow-custom">
           <iframe
             src={mapLocation.embedUrl}
@@ -18,7 +18,7 @@ const Location: React.FC = () => {
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Company Location"
+            title="Ubicación de la Empresa"
           ></iframe>
         </div>
       </div>

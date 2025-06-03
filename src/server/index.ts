@@ -854,6 +854,55 @@ app.get(
     })
 );
 
+app.put(
+    "/api/timeline-events/:id",
+    handleAsync(async (req, res) => {
+        const { id } = req.params;
+        const { year, title, description } = req.body;
+
+        // Construir la query de actualización dinámicamente
+        const fieldsToUpdate = [];
+        const values = [];
+        let paramCount = 1;
+
+        if (year !== undefined) { fieldsToUpdate.push(`year = $${paramCount++}`); values.push(year); }
+        if (title !== undefined) { fieldsToUpdate.push(`title = $${paramCount++}`); values.push(title); }
+        if (description !== undefined) { fieldsToUpdate.push(`description = $${paramCount++}`); values.push(description); }
+
+        if (fieldsToUpdate.length === 0) {
+            return res.status(400).json({ error: "No fields to update provided." });
+        }
+
+        values.push(id); // Para la cláusula WHERE
+        const queryText = `UPDATE timeline_events SET ${fieldsToUpdate.join(", ")} WHERE id = $${paramCount} RETURNING *`;
+
+        const result = await pool.query(queryText, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Timeline event not found" });
+        }
+        res.json(result.rows[0]);
+    })
+);
+
+// Endpoint para CREAR un evento de la línea de tiempo (si lo necesitas en el futuro)
+app.post(
+    "/api/timeline-events",
+    handleAsync(async (req, res) => {
+        const { year, title, description } = req.body;
+        const newId = uuidv4(); // Generar ID único
+
+        if (!year || !title) {
+            return res.status(400).json({ error: "Year and title are required." });
+        }
+        const result = await pool.query(
+            "INSERT INTO timeline_events (id, year, title, description) VALUES ($1, $2, $3, $4) RETURNING *",
+            [newId, year, title, description]
+        );
+        res.status(201).json(result.rows[0]);
+    })
+);
+
 app.post("/api/contact-info", handleAsync(async (req: Request, res: Response) => {
     const { icon, text, show_on_mobile, is_active } = req.body;
     const newId = uuidv4();
@@ -889,21 +938,6 @@ app.put("/api/contact-info/:id", handleAsync(async (req: Request, res: Response)
     }
     res.json(result.rows[0]);
 }));
-app.delete(
-    "/api/timeline-events/:id",
-    handleAsync(async (req, res) => {
-        const { id } = req.params;
-        const result = await pool.query(
-            "DELETE FROM timeline_events WHERE id = $1 RETURNING *",
-            [id]
-        );
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: "Timeline event not found" });
-        }
-        res.status(204).send();
-    })
-);
-
 // --- Contact Info --- (Asumiendo múltiples entradas)
 app.get(
     "/api/contact-info",

@@ -12,7 +12,7 @@ const Products: React.FC = () => {
   return (
     <section id="products" className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-primary-500 mb-12">Our Products</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-primary-500 mb-12">Productos</h2>
         
         {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-2 mb-10">

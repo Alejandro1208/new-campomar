@@ -2,20 +2,21 @@ CREATE TABLE IF NOT EXISTS company_info (
   id VARCHAR(255) PRIMARY KEY DEFAULT '1',
   title VARCHAR(255),
   description TEXT,
-  images JSONB  -- Columna para almacenar el array de imágenes como JSON
+  images JSONB
 );
-
--- Insertar datos iniciales (con un array de imágenes vacío o con ejemplos)
--- Asegúrate de que el id '1' sea el que usas consistentemente.
--- Para un array vacío:
-INSERT INTO company_info (id, title, description, images) VALUES
-('1', 'Nuestra Empresa Desde SQL', 'Descripción inicial desde SQL.', '[]') 
-ON CONFLICT (id) DO UPDATE 
-SET title = EXCLUDED.title, 
-    description = EXCLUDED.description,
-    images = EXCLUDED.images; 
--- ON CONFLICT es para manejar el caso de que la fila ya exista (útil si el script se corre múltiples veces)
--- Si prefieres datos de ejemplo para las imágenes:
--- INSERT INTO company_info (id, title, description, images) VALUES
--- ('1', 'Nuestra Empresa Ejemplo', 'Descripción con imágenes de ejemplo.', '[{"id": "imgsql1", "src": "https://via.placeholder.com/300x200.png?text=Imagen+SQL+1", "alt": "Imagen de ejemplo 1 desde SQL"}, {"id": "imgsql2", "src": "https://via.placeholder.com/300x200.png?text=Imagen+SQL+2", "alt": "Imagen de ejemplo 2 desde SQL"}]')
--- ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, description = EXCLUDED.description, images = EXCLUDED.images;
+INSERT INTO company_info (id, title, description, images)
+VALUES (
+    '1',
+    'La empresa',
+    'Distribuidora Campomar S.A. fue gestada como una empresa familiar en el año 1957, convirtiéndose a lo largo de 65 años en una compañía líder dentro del mercado de reposición automotriz. Debido al arduo trabajo, responsabilidad y compromiso asumido por las tres generaciones que han tomado la dirección, Distribuidora Campomar S.A. ha logrado sostener los valores que sus fundadores han inculcado en la familia a lo largo de estos años como pilares fundamentales para brindar un servicio de excelencia e innovador para sus clientes.',
+    '[
+        { "id": "img1", "src": "/img/la-empresa-1.jpg", "alt": "Descripción de la imagen 1 de la empresa" },
+        { "id": "img2", "src": "/img/la-empresa-2.jpg", "alt": "Descripción de la imagen 2 de la empresa" },
+        { "id": "img3", "src": "/img/la-empresa-3.jpg", "alt": "Descripción de la imagen 3 de la empresa" },
+        { "id": "img4", "src": "/img/la-empresa-4.jpg", "alt": "Descripción de la imagen 4 de la empresa" }
+    ]'::jsonb 
+  ) ON CONFLICT (id) DO
+UPDATE
+SET title = EXCLUDED.title,
+  description = EXCLUDED.description,
+  images = EXCLUDED.images;

@@ -5,5 +5,5 @@ hours VARCHAR(255)
 );
 
 INSERT INTO business_hours (id, days, hours) VALUES
-('1', 'Lun-Vie', '9:00-18:00');
+('1', 'Lun-Vie', '8:00-17:45');
 

@@ -18,6 +18,8 @@ import {
 import { databaseService } from "../services/databaseService";
 
 interface WebsiteStore extends WebsiteData {
+
+    initialDataLoaded: boolean;
     // Data Loading
     loadInitialData: () => Promise<void>;
 
@@ -72,12 +74,16 @@ interface WebsiteStore extends WebsiteData {
         data: SiteSettingsPayload & { logoFile?: File | null }
     ) => Promise<void>;
 
+    updateTimelineEvent: (id: string, eventData: Partial<TimelineEvent>) => Promise<void>;
+
+
     // Nuevas propiedades para el estado
     footerShortDescription: string;
     footerCopyright: string;
 }
 
 export const useWebsiteStore = create<WebsiteStore>((set, get) => ({
+    initialDataLoaded: false,
     // Estado inicial
     contactInfo: [],
     menuItems: [],
@@ -97,7 +103,6 @@ export const useWebsiteStore = create<WebsiteStore>((set, get) => ({
     logo: "",
     footerShortDescription: "",
     footerCopyright: "",
-    // Data Loading
     loadInitialData: async () => {
         try {
             const [
@@ -162,6 +167,22 @@ export const useWebsiteStore = create<WebsiteStore>((set, get) => ({
         }
     },
 
+    updateTimelineEvent: async (id, eventData) => {
+    try {
+      console.log("Store: updateTimelineEvent - ID:", id, "Datos:", eventData);
+      const updatedEvent = await databaseService.updateTimelineEvent(id, eventData); // Asume que esta función existe en tu servicio
+      console.log("Store: updateTimelineEvent - Respuesta del servicio:", updatedEvent);
+      set((state) => ({
+        timelineEvents: state.timelineEvents.map((event) =>
+          event.id === id ? { ...event, ...updatedEvent } : event
+        ),
+      }));
+    } catch (error) {
+      console.error("Error en store updateTimelineEvent:", error);
+      throw error; // Para que el componente pueda manejarlo
+    }
+  },
+
     // Products
     updateProducts: (products) => set({ products }),
     updateProduct: async (id, data) => {
@@ -189,67 +210,43 @@ export const useWebsiteStore = create<WebsiteStore>((set, get) => ({
             console.error("Error adding product:", error);
         }
     },
-    updateSiteSettings: async (data) => {
-        // data es SiteSettingsPayload & { logoFile?: File | null }
-        try {
-            console.log("Store: updateSiteSettings - Datos recibidos:", data);
-            let logoPathToSave =
-                data.logo !== undefined ? data.logo : get().logo; // Usa el logo actual como base
+  updateSiteSettings: async (data) => {
+    try {
+      console.log("Store: updateSiteSettings - Datos recibidos:", data);
+      let logoPathToSave = data.logo !== undefined ? data.logo : get().logo;
 
-            if (data.logoFile) {
-                console.log(
-                    "Store: updateSiteSettings - Subiendo nuevo logo..."
-                );
-                const uploadResponse = await databaseService.uploadSiteLogoFile(
-                    data.logoFile
-                );
-                logoPathToSave = uploadResponse.filePath;
-                console.log(
-                    "Store: updateSiteSettings - Nuevo logo subido, ruta:",
-                    logoPathToSave
-                );
-            }
+      if (data.logoFile) {
+        console.log("Store: updateSiteSettings - Subiendo nuevo logo...");
+        const uploadResponse = await databaseService.uploadSiteLogoFile(data.logoFile);
+        logoPathToSave = uploadResponse.filePath;
+        console.log("Store: updateSiteSettings - Nuevo logo subido, ruta:", logoPathToSave);
+      }
 
-            const finalPayload: SiteSettingsPayload = {
-                mapLocation:
-                    data.mapLocation !== undefined
-                        ? data.mapLocation
-                        : get().mapLocation,
-                logo: logoPathToSave,
-                footerShortDescription:
-                    data.footerShortDescription !== undefined
-                        ? data.footerShortDescription
-                        : get().footerShortDescription,
-                footerCopyright:
-                    data.footerCopyright !== undefined
-                        ? data.footerCopyright
-                        : get().footerCopyright,
-            };
-
-            console.log(
-                "Store: updateSiteSettings - Payload final enviado a databaseService:",
-                finalPayload
-            );
-            const updatedSettings = await databaseService.updateSiteSettings(
-                finalPayload
-            );
-            console.log(
-                "Store: updateSiteSettings - Respuesta de databaseService:",
-                updatedSettings
-            );
-
-            set({
-                mapLocation: updatedSettings.mapLocation,
-                logo: updatedSettings.logo,
-                footerShortDescription:
-                    updatedSettings.footerShortDescription || "",
-                footerCopyright: updatedSettings.footerCopyright || "",
-            });
-        } catch (error) {
-            console.error("Error en store updateSiteSettings:", error);
-            throw error;
-        }
-    },
+      const currentSettings = get(); // Obtener el estado actual para preservar campos no enviados
+      const finalPayload: SiteSettingsPayload = {
+        // Preserva mapLocation si no viene en 'data'
+        mapLocation: data.mapLocation !== undefined ? data.mapLocation : currentSettings.mapLocation,
+        logo: logoPathToSave,
+        footerShortDescription: data.footerShortDescription !== undefined ? data.footerShortDescription : currentSettings.footerShortDescription,
+        footerCopyright: data.footerCopyright !== undefined ? data.footerCopyright : currentSettings.footerCopyright,
+      };
+      
+      console.log("Store: updateSiteSettings - Payload final enviado a databaseService:", finalPayload);
+      const updatedSettings = await databaseService.updateSiteSettings(finalPayload);
+      console.log("Store: updateSiteSettings - Respuesta de databaseService:", updatedSettings);
+      
+      set({ 
+        mapLocation: updatedSettings.mapLocation, 
+        logo: updatedSettings.logo,
+        footerShortDescription: updatedSettings.footerShortDescription || '',
+        footerCopyright: updatedSettings.footerCopyright || ''
+        // initialDataLoaded se mantiene true, no es necesario resetearlo aquí
+      });
+    } catch (error) {
+      console.error("Error en store updateSiteSettings:", error);
+      throw error;
+    }
+  },
     removeProduct: async (id) => {
         try {
             await databaseService.deleteProduct(id);

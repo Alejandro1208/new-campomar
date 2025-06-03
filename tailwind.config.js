@@ -4,6 +4,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'timeline-1': '#A56FA6',
+        'timeline-2': '#766FA6',
+        'timeline-3': '#2A558C',
+        'timeline-4': '#42628C',
         primary: {
           100: '#47a6e9',
           200: '#3595d6',

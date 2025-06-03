@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS social_media (
 );
 
 INSERT INTO social_media (id, name, icon, url) VALUES
-('1', 'Facebook', 'facebook', 'https://facebook.com'),
-('2', 'Instagram', 'instagram', 'https://instagram.com');
+('1', 'Facebook', 'facebook', 'https://www.facebook.com/DistribuidoraCampomar/'),
+('2', 'Instagram', 'instagram', 'https://www.instagram.com/distribuidoracampomarsa/');

@@ -422,7 +422,21 @@ export const databaseService = {
       footerShortDescription: data.footerShortDescription || data.footer_short_description || '', // <---
       footerCopyright: data.footerCopyright || data.footer_copyright || ''                // <---
   };
-}
+},
+  async updateTimelineEvent(id: string, eventData: Partial<TimelineEvent>): Promise<TimelineEvent> {
+    // LA LÍNEA PROBLEMÁTICA ESTARÁ AQUÍ:
+    const response = await fetch(`${API_URL}/timeline-events/${id}`, { // <--- ASEGÚRATE QUE ESTÉ ASÍ
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(eventData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Error updating timeline event' }));
+      console.error("databaseService: Error en updateTimelineEvent, respuesta del backend:", errorData);
+      throw new Error(errorData.message || 'Error updating timeline event');
+    }
+    return response.json();
+  },
 
 };
 

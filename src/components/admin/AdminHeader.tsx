@@ -1,10 +1,13 @@
+// src/components/admin/AdminHeader.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
-import { LogOut, User, LogIn } from 'lucide-react';
+import { useWebsiteStore } from '../../store/useWebsiteStore'; // <--- IMPORTAR EL STORE DEL SITIO
+import { LogOut, User } from 'lucide-react'; // LogIn ya no se usa aquí si lo reemplaza el logo
 
 const AdminHeader: React.FC = () => {
   const { user, logout } = useAuthStore();
+  const siteLogo = useWebsiteStore((state) => state.logo); // <--- OBTENER EL LOGO
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -12,13 +15,23 @@ const AdminHeader: React.FC = () => {
     navigate('/admin');
   };
 
+  const fullLogoUrl = siteLogo && siteLogo.startsWith('/') 
+                      ? `http://localhost:3001${siteLogo}` 
+                      : siteLogo;
+
+
+
   return (
     <header className="bg-primary-500 text-white py-4">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <LogIn className="h-6 w-6 mr-2" />
-            <h1 className="text-xl font-bold">Admin Dashboard</h1>
+            {fullLogoUrl ? (
+              <img src={fullLogoUrl} alt="Logo" className="h-8 md:h-10 mr-3" /> 
+            ) : (
+              null 
+            )}
+            <h1 className="text-xl font-bold">Panel de administración</h1>
           </div>
           
           {user && (
@@ -33,7 +46,7 @@ const AdminHeader: React.FC = () => {
                 className="flex items-center px-3 py-1 rounded-full border border-white text-white hover:bg-white hover:text-primary-500 transition-all duration-200"
               >
                 <LogOut className="h-4 w-4 mr-1" />
-                <span>Logout</span>
+                <span>Salir</span>
               </button>
             </div>
           )}

@@ -6,7 +6,7 @@ description TEXT
 );
 
 INSERT INTO timeline_events (id, year, title, description) VALUES
-('1', '2000', 'Fundación', 'Comenzamos nuestro viaje con la visión de ofrecer los mejores productos y servicios.'),
-('2', '2005', 'Expansión', 'Ampliamos nuestra línea de productos y abrimos nuestra primera oficina regional.'),
-('3', '2010', 'Alcance Internacional', 'Nuestros productos llegaron a mercados internacionales y obtuvieron reconocimiento global.'),
-('4', '2020', 'Centro de Innovación', 'Establecimos nuestro centro de innovación para desarrollar nuevas soluciones de vanguardia.');
+('1', '1957', '1ra Generacion', 'Comenzamos nuestro viaje con la visión de ofrecer los mejores productos y servicios.'),
+('2', '1987', '2da Generacion', 'Ampliamos nuestra línea de productos y abrimos nuestra primera oficina regional.'),
+('3', '2008', '3ra Generacion', 'Nuestros productos llegaron a mercados internacionales y obtuvieron reconocimiento global.'),
+('4', '2024', 'Actualidad', 'Establecimos nuestro centro de innovación para desarrollar nuevas soluciones de vanguardia.');

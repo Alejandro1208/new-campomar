@@ -8,10 +8,10 @@ CREATE TABLE IF NOT EXISTS contact_info (
 
 
 INSERT INTO contact_info (id, icon, text, show_on_mobile, is_active) VALUES
-('1', 'phone', '+54 9 11 1234-5678', TRUE, TRUE),
-('2', 'mail', 'info@empresa.com', TRUE, TRUE),
-('3', 'map-pin', 'Av. Siempre Viva 742', FALSE, TRUE),
-('4', 'clock', 'Lun-Vie: 9am - 6pm', FALSE, TRUE)
+('1', 'phone', '1152632814', TRUE, TRUE),
+('2', 'phone', '1132140313', TRUE, TRUE),
+('3', 'map-pin', 'Av. Warnes 1255, CABA', FALSE, TRUE),
+('4', 'email', ' ventas@campomarsa.com.ar', FALSE, TRUE)
 ON CONFLICT (id) DO UPDATE SET 
   icon = EXCLUDED.icon, 
   text = EXCLUDED.text, 
