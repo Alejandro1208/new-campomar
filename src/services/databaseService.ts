@@ -14,7 +14,7 @@ import {
   SiteSettingsResponse
 } from '../types';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = '/api';
 
 interface UploadedImageResponse {
   message: string;
