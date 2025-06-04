@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User, AuthState } from '../types';
 
-const API_URL = 'http://localhost:3001/api'; // URL de tu backend
+const API_URL = '/api'; // URL de tu backend
 
 export const useAuthStore = create<AuthState>()(
   persist(
