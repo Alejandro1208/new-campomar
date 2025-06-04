@@ -3,13 +3,14 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+# Asegúrate de instalar todas las dependencias, incluidas las de desarrollo para la fase de build
+RUN npm install --production=false
 
 COPY . .
 
-# Compila el código TypeScript a JavaScript
-RUN npx tsc --project tsconfig.server.json
+# Ejecuta el script de build de tu package.json ("tsc && vite build")
+RUN npm run build
 
-# Ejecuta el código compilado
+# El CMD ya es correcto para el backend compilado
 CMD ["node", "dist-backend/index.js"]
 EXPOSE 3001
