@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json()); // Middleware para parsear JSON en el body de las requests
 
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, '..', 'dist')));
 
 // Configuración del Pool de Conexiones a PostgreSQL
 const pool = new Pool({
