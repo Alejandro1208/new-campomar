@@ -1,0 +1,482 @@
+:root {
+    --primary-color: #1e3d59;
+    --secondary-color: #17c3b2;
+    --background-color: #f5f5f5;
+    --text-color: #333;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+/* Add section styling */
+#facturas, #formasPago {
+    background-color: rgba(30, 61, 89, 0.03);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border: 1px solid rgba(30, 61, 89, 0.1);
+}
+
+/* Make the calculate button stand out */
+#calcularDescuento {
+    background-color: var(--secondary-color);
+    font-size: 1.3rem;
+    padding: 15px 24px;
+    margin-top: 2rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(23, 195, 178, 0.2);
+    transition: all 0.3s ease;
+}
+
+#calcularDescuento:hover {
+    background-color: #15b3a3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(23, 195, 178, 0.3);
+}
+
+/* Style the date input section */
+.fecha-recibo-section {
+    background-color: rgba(30, 61, 89, 0.05);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border: 1px solid rgba(30, 61, 89, 0.1);
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    width: 100%;
+    margin: 1rem 0;
+    transition: background-color 0.3s;
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+#calcularDescuento {
+    font-size: 1.3rem;
+    padding: 15px 24px;
+    margin-top: 2rem;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+input[type="date"], input[type="number"], input[type="text"], select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    margin: 0.5rem 0;
+    box-sizing: border-box;
+    background-color: white;
+    transition: border-color 0.3s;
+}
+
+input[type="date"]:focus, input[type="number"]:focus, input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(23, 195, 178, 0.1);
+}
+
+.factura-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.factura-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.eliminar-factura {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.eliminar-factura:hover {
+    background-color: #cc0000;
+}
+
+.factura-container {
+    background-color: white;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+#resultados {
+    background-color: var(--primary-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-top: 1.5rem;
+    box-shadow: var(--box-shadow);
+    color: white;
+}
+
+#resultados span.animate {
+    animation: numberPulse 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes numberPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+        color: #fff;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#resultados span {
+    color: var(--secondary-color);
+    font-weight: bold;
+    font-size: 1.4rem;
+    display: block;
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+#importeTotalSinDescuento span::before,
+#importeTotalConDescuento span::before {
+    content: '$';
+    margin-right: 4px;
+}
+
+#resultados span {
+    animation: numberPop 0.6s ease-out;
+}
+
+@keyframes numberPop {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#resultados h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    color: white;
+    text-align: center;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+}
+
+#resultados .resultado-fila {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 1rem 0;
+}
+
+#resultados .resultado-fila p {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+}
+
+#resultados p {
+    margin: 1rem 0;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* Hacer más grande el importe total con descuento */
+#importeTotalConDescuento {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+}
+
+#importeTotalConDescuento span {
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#resultados span {
+    color: var(--secondary-color);
+    font-weight: bold;
+    font-size: 1.4rem;
+    display: block;
+    margin-top: 0.5rem;
+}
+
+#facturas {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        margin: 0;
+        padding: 1rem;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
+
+
+details {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: rgba(30, 61, 89, 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--primary-color);
+}
+
+details summary {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: color 0.3s;
+}
+
+details summary:hover {
+    color: var(--secondary-color);
+}
+
+details p {
+    margin: 1rem 0;
+    line-height: 1.6;
+}
+
+details strong {
+    color: var(--primary-color);
+}
+
+details ul {
+    margin: 0.5rem 0 1rem 1.5rem;
+    padding-left: 0;
+}
+
+details li {
+    margin: 0.5rem 0;
+    line-height: 1.5;
+}
+
+details[open] summary {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--secondary-color);
+    padding-bottom: 1rem;
+}
+
+.factura, .formaPago {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border: 1px solid rgba(23, 195, 178, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Agregar animaciones base */
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Aplicar animaciones a los componentes principales */
+.fecha-recibo-section,
+#facturas,
+#formasPago,
+#resultados,
+details {
+    animation: fadeSlideIn 0.6s ease-out;
+}
+
+/* Animación para nuevos comprobantes y formas de pago */
+.factura,
+.formaPago {
+    animation: scaleIn 0.4s ease-out;
+}
+
+/* Mejorar las transiciones existentes */
+.factura:hover,
+.formaPago:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: var(--secondary-color);
+    transform: translateY(-2px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.instrucciones-link {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.9em;
+    color: var(--secondary-color);
+    text-decoration: none;
+    margin-left: 8px;
+}
+
+.instrucciones-link:hover {
+    text-decoration: underline;
+}
+
+.instrucciones-link i {
+    margin-right: 4px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+#instruccionesFechas {
+    scroll-margin-top: 20px;
+}
+
+.aclaracion {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 300;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.input-wrapper {
+    margin-bottom: 1rem;
+    width: 100%;
+    display: block;
+}
+
+.input-wrapper label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Style for placeholder text */
+input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+select option[disabled] {
+    color: #999;
+    font-style: italic;
+}
+
+.reiniciar-btn {
+    background-color: #6c757d;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+.reiniciar-btn:hover {
+    background-color: #5a6268;
+}
+
+.reiniciar-btn i {
+    margin-right: 8px;
+}

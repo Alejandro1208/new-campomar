@@ -1,0 +1,14 @@
+.time {
+    float: left;
+    padding-left: 50px;
+    padding-right: 30px;
+}
+.time div{
+    display: none;
+}
+
+.circulo::before{
+    content: "";
+    color: blue;
+    width: 100px;
+}

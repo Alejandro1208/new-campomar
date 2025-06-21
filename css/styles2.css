@@ -1,0 +1,294 @@
+*{
+  font-family: 'Raleway', sans-serif;
+}
+
+/*Encabezado*/
+.row .top-nav .nav{
+  display: flex;
+}
+.top-nav .nav{
+  background-color: #295596;
+  justify-content: center;
+  height: 27px;
+  padding-top: 0;
+}
+.logo{
+  margin-right: 99px;
+  width: 300px;
+}
+.nav-link2{
+  color: #295596 !important;
+  text-decoration: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-weight: 800;
+}
+.nav-link1{
+  color: #f0f0f0 !important;
+  text-decoration: none;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-size: 14px;
+}
+
+
+
+.navbar-text a{
+
+  font-size: 20px; 
+  font-family: 'Raleway', sans-serif !important;
+}
+
+/*fin encabezado*/
+
+
+/*Banners*/
+.mobil{
+  object-fit: cover;
+}
+/*fin banners*/
+
+/*Navbar*/
+.menu{
+  position:fixed;
+  width: 100%;
+  z-index: 999;
+}
+.nav-principal{
+  background-color:#f0f0f0;
+  
+}
+.menu-principal{
+  color: #295596 !important;
+  font-weight: 900 !important;
+  font-size: 20px !important;
+  
+}
+.menu-principal:hover{
+  color: #295596 !important;
+  font-weight: 900 !important;
+  font-size: 20px !important;
+  margin-top: -4px;
+
+  text-decoration: underline;
+}
+.me-auto li{
+  padding: 13px;
+}
+/*fin Navbar*/
+
+/*redes sociales*/
+
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+  font-size:30px;
+	box-shadow: 2px 2px 3px #999;
+  z-index:100;
+}
+.float:hover {
+	text-decoration: none;
+	color: #25d366;
+  background-color:#fff;
+}
+
+.my-float{
+	margin-top:16px;
+}
+
+.social-bar {
+	position: fixed;
+	right: 0;
+	top: 35%;
+	font-size: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	z-index: 100;
+}
+#contactenos a{
+  text-decoration: none; 
+  color: #FFF;
+  font-family: 'Raleway', sans-serif;
+}
+.icon {
+	color: white;
+	text-decoration: none;
+	padding: .7rem;
+	display: flex;
+	transition: all .5s;
+}
+.social-bar .fa {
+	color: white;
+	text-decoration: none;
+	padding: .7rem;
+	display: flex;
+	transition: all .5s;
+}
+.social-bar .mail {
+	color: white;
+	text-decoration: none;
+	padding: .7rem;
+	display: flex;
+	transition: all .5s;
+}
+
+
+.icon-facebook {
+	background: #2E406E;
+}
+
+.fa-envelope {
+	background: #339DC5;
+}
+
+.fa-phone{
+	background: #62e828;
+}
+
+.icon-instagram {
+	background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+}
+
+.icon:first-child {
+	border-radius: 1rem 0 0 0;
+}
+
+.icon:last-child {
+	border-radius: 0 0 0 1rem;
+}
+
+.icon:hover {
+	padding-right: 3rem;
+	border-radius: 1rem 0 0 1rem;
+	box-shadow: 0 0 .5rem rgba(0, 0, 0, 0.42);
+}
+.social-bar .fa:hover {
+	padding-right: 3rem;
+	border-radius: 1rem 0 0 1rem;
+	box-shadow: 0 0 .5rem rgba(0, 0, 0, 0.42);
+}
+/*fin redes sociales*/
+
+/*La empresa*/
+.la-empresa-conteiner{
+  background-color: #f0f0f0;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.la-empresa{
+  text-align: center;
+  font-size: 50px;
+  color: #295596;
+  font-weight: 600;
+}
+
+
+.nosotros-img{
+  text-align: center;
+}
+.nosotros-img img{
+  width: 350px;
+}
+
+
+
+
+.la-empresa-p{
+  color: #295596;
+  font-size: 20px;
+  margin: auto;
+  padding: 20px 5% 50px 5% !important;
+  font-weight: 500;
+  max-width: 1275px !important;
+
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{
+  font-family: 'Raleway', sans-serif !important;
+} 
+
+/*Fin La empresa*/
+
+/*productos*/
+
+/*Fin productos*/
+
+/*Media qerys*/
+@media screen and (max-width: 600px) {
+  .top-nav .nav{
+    height: 20px;
+  }
+  .top-nav p{
+    display: none;
+  }
+  .top-nav .nav a{
+    font-size: 12px;
+    align-items: center;
+  }
+  .aaa{
+    width: 6px;
+  } 
+  .logo{
+    width: 200px;
+  }
+  .encabezado-pie{
+    padding-bottom: 40px;
+  }
+
+  .navbar-collapse{
+    height: 350px !important;
+  }
+  .menu-principal:hover{
+    margin: 0 !important;
+  }
+
+  #carouselExampleIndicators{
+    padding-top: 114px !important;
+  }
+
+  .mobil{
+    padding-top: 70px;
+    padding-bottom: 50px;
+    width: 200px;
+    height: 300px;
+  }
+  .me-auto{
+    padding-left: 0%;
+  }
+  .nosotros-img{
+    text-align: center;
+  }
+  .nosotros-img img{
+    margin-bottom: 38px;
+    width: 330px;
+
+  }
+
+}
+
+/*tablet */
+
+
+@media screen and (max-width: 1300px){
+  .nosotros-img img{
+    width: 250px;
+  }
+  .logo{
+    width: 200px;
+  }
+}
+
+@media (min-width: 992px){
+  .nav-link{
+    padding: 0!important;
+  }
+}
+

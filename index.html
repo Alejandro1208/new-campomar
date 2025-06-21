@@ -1,13 +1,542 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern One-Page Website with Admin Panel</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Distribuidora Campomar</title>
+        <script src="js/jquery-3.2.1.js"></script>
+        <link rel="shortcut icon" href="./img/favicon.ico">
+        <link rel="stylesheet" href="css.css">
+        <link rel="stylesheet" href="/css/font.css">
+        <link rel="stylesheet" href="/css/estilos.css">
+        <link rel="stylesheet" href="/css/styles2.css">
+        <link rel="stylesheet" href="./css/productos.css">
+        <link rel="stylesheet" href="./css/time-lapse.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;600&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+        
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11084767356"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'AW-11084767356');
+        </script>
+        
+        <!-- Facebook Pixel Code -->
+        <script>
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window,document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '1720067252109579'); 
+                fbq('track', 'PageView');
+        </script>
+        <noscript>
+        <img height="1" width="1" 
+            src="https://www.facebook.com/tr?id=1720067252109579&ev=PageView
+        &noscript=1"/>
+        </noscript>
+        <!-- End Facebook Pixel Code -->
+    </head>
+    <body style="overflow-x: hidden;">
+
+        <!--Encabezado-->
+        <div class="container-fuid menu" id="inicio">
+            <div class="row top-nav shadow-lg">
+                <nav class="nav">
+                    <a class="nav-link1" href="tel: 01152632814"><i class="fa fa-phone-square" aria-hidden="true"></i> 01152632814</a>
+                    <p style="color: #fff;">-</p>
+                    <a class="nav-link1" href="https://api.whatsapp.com/send?phone=+541132140313&text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre..." target="_blank"><i class="fa fa-whatsapp" aria-hidden="true"></i>  1132140313</a>
+                    <p style="color: #fff;">-</p>
+                    <a class="nav-link1" target="_blank" href="https://goo.gl/maps/LuXrAztyV4FKh3TeA"><i class="fa fa-map-marker" aria-hidden="true"></i> Av. Warnes 1255, CABA</a>
+                    <p style="color: #fff;">-</p>         
+                    <a class="nav-link1" href="mailto:ventas@campomarsa.com.ar" target="_blank"><i class="fa fa-envelope-o" aria-hidden="true"></i> ventas@campomarsa.com.ar</a>
+                </nav>
+                
+            </div>
+            <div id="inicio" class="row nav-principal">
+                <nav class="navbar navbar-expand-lg">
+                    <div class="container-fluid">
+                        <a  href="#"><img src="./img/logo-header_page-0001-removebg-preview (1).png" alt="" class="logo"></a>
+                        
+                        
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarText">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link menu-principal active" aria-current="page" href="#">Inicio</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-principal" href="#la-empresa">La empresa</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-principal" href="#productos">Productos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-principal" href="#contactenos">Contactanos</a>
+                                </li>
+                            </ul>
+                            <span class="navbar-text">
+                                <a target="_blank" class="nav-item nav-link2 ingresar" href="http://accesoclientes.centum.com.ar/PL1/BL1/DistribuidoraCampomarSA/"><img src="./img/icons8-login-24.png" alt="" style="padding-right: 5px;">Ingresar</a>
+                                <a target="_blank" class="nav-item nav-link2" href="https://forms.gle/hAmfoSmwfBbGF32s5"><img src="./img/icons8-usuario-masculino-en-círculo-24.png" alt="" style="padding-right: 5px;">Registrate</a>
+                            </span>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!--Redes sociales-->
+        <div class="social-bar">
+            <a href="https://www.facebook.com/DistribuidoraCampomar/" class="icon icon-facebook" target="_blank"></a>
+            <a href="tel: 01152632814" id="phone" class="fa fa-phone" target="_blank"></a>
+            <a href="mailto:ventas@campomarsa.com.ar" class="mail fa fa-envelope" target="_blank"></a>
+            <a href="https://www.instagram.com/distribuidoracampomarsa/" class="icon icon-instagram" target="_blank"></a>
+        </div>
+
+        <a href="https://api.whatsapp.com/send?phone=+541132140313&text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre..." class="float" target="_blank">
+            <i id="fa"class="fa fa-whatsapp my-float"></i>
+        </a>
+
+        <!--BANNERS-->
+        <div id="carouselExampleIndicators" class="carousel slide shadow-lg" data-bs-ride="carousel" style="padding-top: 198px; padding-bottom: 35px">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active img-mobiluno">
+                    <img src="./img/banner4.jpeg" class="mobil d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item active img-mobil">
+                    <img src="./img/banner2.jpeg" class="mobil d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item active img-mobil">
+                    <img src="./img/banner3.jpeg" class="mobil d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item active img-mobil">
+                    <img src="./img/banner4.jpeg" class="mobil d-block w-100" alt="...">                 
+                </div>
+                <div class="carousel-item active img-mobiluno">
+                    <img src="./img/banner5.jpeg" class="mobil d-block w-100" alt="...">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!--La empresa-->
+        <div id="la-empresa" class="container-fluid la-empresa-conteiner">
+            <div class="row">
+                <h2 class="la-empresa">
+                    La empresa
+                </h2>
+                <p class="la-empresa-p">
+                    Distribuidora Campomar S.A. fue gestada como una empresa familiar en el año 1957, convirtiéndose a lo largo de 65 años en una compañía líder dentro del mercado de reposición automotriz.
+                    Debido al arduo trabajo, responsabilidad y compromiso asumido por las tres generaciones que han tomado la dirección, Distribuidora Campomar S.A. ha logrado sostener los valores que sus fundadores han inculcado en la familia a lo largo de estos años como pilares fundamentales para brindar un servicio de excelencia e innovador para sus clientes.
+                    
+                </p>
+            </div>
+            <div class="row nosotros-img">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <img src="./img/la-empresa-1.jpeg" alt="">
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <img src="./img/la-empresa-2.jpeg" alt="">
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <img src="./img/la-empresa-3.jpeg" alt="">
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <img src="./img/la-empresa-4.jpeg" alt="">
+                </div>
+            </div>
+            <div class="row">
+                <img src="./img/time-lapse.png" alt="" style="width: 1200px !important; margin: auto;">
+            </div>
+        </div>
+
+        <!-----------------------Productos---------------------->
+        <h1 id="productos" >Productos</h1>
+        <div class="row">
+            <div align="center">
+                <button class="btn filter-button" data-filter="all">Todas</button>
+                <button class="btn filter-button" data-filter="encendido">Encendido</button>
+                <button class="btn filter-button" data-filter="electricidad">Electricidad</button>
+                <button class="btn filter-button" data-filter="inyeccion">Inyección</button>
+                <button class="btn filter-button active" data-filter="iluminacion">Iluminación</button>
+                <button class="btn filter-button" data-filter="accesorios">Accesorios</button>
+                <button class="btn filter-button" data-filter="mecanica">Mecánica</button>
+            </div>
+        </div>
+        <div class="wrap container-fluid pb-5 mb-3">
+                <div class="lista">
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios iluminacion pb-4">
+                        <a href="https://drive.google.com/file/d/1i5I1FcCAQvAktQViADPP5qbz1CVuQJ-c/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/acceplastic.jpeg" class="img-responsive lsimg pb-3"></a>
+                        <h6 class="">Faros - Lentes - Plafones - Portalámparas</h6>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido accesorios electricidad inyeccion iluminacion mecanica pb-4">
+                        <img src="/images/imagenes/marcas/Accesorios Importados.jpeg" width="229px" class="img-responsive lsimg pb-3">
+                        <h6>Accesorios importados - Polarizados<br> Faros auxiliares universales - Varios</h6>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido electricidad">
+                        <img src="/images/imagenes/marcas/Alfa.png" class="img-responsive lsimg estilosimg m-auto pb-3" width="180px">
+                        <h6>Conmutadores de luces y limpiaparabrisas<br>Contactores de arranque - Plaquetas de giro</h6>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad encendido pb-4">
+                        <div><img src="/images/imagenes/marcas/Argelite.jpeg" class="img-responsive lsimg estilosimg" width="130px"></div>
+                        <div><h6>Cables para bujías<br>Bobinas de ignición</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/b52.jpeg" class="img-responsive lsimg estilosimg" width="180px"></div>
+                        <div><h6>Alarmas - Car audio - Parlantes y woofer</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter iluminacion">
+                        <div><img src="/images/imagenes/marcas/Baiml.png" class="img-responsive lsimg pb-3"></div>
+                        <div><h6>Faros - Lentes - Fichas - Portalámparas</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad encendido">
+                        <div><a href="https://drive.google.com/file/d/1mTCAQfyjhioQR5xhP4NSg-o1HUf52o9C/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Byc.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Bujes</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1yyhUL2Dkg9kQLVgZe2-Tgnnds0hTKE1e/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Campos 1441.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Campos de arranque y dinamo</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido">
+                        <div><a href="https://drive.google.com/file/d/17nxdfcSj13tc6wrHGCTytcKxs6oEZJZ-/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Champion.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Bujías de nafta, incandescentes y jardín</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/Damat.png" class="img-responsive lsimg"></div>
+                        <div><h6>Spaghetti termocontraible</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><img src="/images/imagenes/marcas/Delco Remy.png" class="img-responsive lsimg pb-3"></div>
+                        <div><h6>Arranque - Alternadores<br>Despiece de arranque - Despiece de alternador</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad encendido">
+                        <div><a href="https://drive.google.com/file/d/1hSWHKgoJv9L6vT4Y5cnKNX6XbUblgiyZ/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Denso.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Bujías de nafta estándar e iridium<br>Alternadores - Arranques</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad mecanica">
+                        <div><a href="https://drive.google.com/file/d/11BBG7YD7hADMPtupNvtxM8cE80tF5F_d/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Dipra.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Despiece de arranque<br>Despiece de limpiaparabrisas<br>Despiece de alternador</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/Dml.png" class="img-responsive lsimg pb-3"></div>
+                        <div><h6>Discos para tacógrafo</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/Doc.png" class="img-responsive lsimg pb-3"></div>
+                        <div><h6>Cinturones de seguridad</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido">
+                        <div><img src="/images/imagenes/marcas/Dog.png" class="img-responsive lsimg"></div>
+                        <div><h6>Llaves de contacto y arranque</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter mecanica">
+                        <div><a href="https://drive.google.com/file/d/1IIQqBDDIqLopt72U5u1b_tU5BPgWbOgW/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Dolz.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Bombas de agua y contracuerpo</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1qIfMidMTTy1CLQWFZdH7WnQRSyPEHC-m/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Duracell.png" class="img-responsive lsimg estilosimg" width="200px"></a></div>
+                        <div><h6>Baterías</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad encendido">
+                        <div><a href="https://drive.google.com/file/d/1aXAa2wrbXrV73a6cVjHMHNmPaZy6VOOH/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Dze.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Destelladores - Platinos<br>Relays - Temporizadores</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido">
+                        <div><img src="/images/imagenes/marcas/Ele-ese.png" class="img-responsive lsimg"></div>
+                        <div><h6>Distribuidor electrónico</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1ApEKGX3TcsFngYY6tcGAZmCZmRNNjBny/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Elod.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Llaves de tecla y accesorios</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/Esebe.png" class="img-responsive lsimg estilosimg pb-3" width="200px"></div>
+                        <div><h6>Estaño</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><a href="https://drive.google.com/file/d/16Mo0SCRRHRLk4tFXzA0ZBjMeqXJKdpX1/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Fb.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Espejos - Soportes de espejo - Tapas de tanque de nafta</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><a href="https://drive.google.com/file/d/1BtQ_7-ZWrG4syr_kJg42LHbTTk_oNb9w/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Fiamm.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Bocinas</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad mecanica">
+                        <div><a href="https://drive.google.com/file/d/1PCj3G6k_uvXGf988wiB23LkH3z713VaH/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Gates.jpeg" class="img-responsive lsimg estilosimg" width="200px"></a></div>
+                        <div><h6>Correas - Kits de correas y tensor</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1wqnXcBq7e1gRYLoGnl-uGKwir1WMA74G/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Genrod.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Fusibles, portafusibles y fusibleras</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido">
+                        <div><a href="https://drive.google.com/file/d/1wqnXcBq7e1gRYLoGnl-uGKwir1WMA74G/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Genoud.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Cables para bujías - Despiece de distribuidor<br>Escobillas</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter mecanica">
+                        <div><img src="/images/imagenes/marcas/Geny.png" class="img-responsive lsimg"></div>
+                        <div><h6>Bulbos - Interruptores<br>Llaves - Termostatos</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1I2LjBn_wLPVUP38uDzfpUg6wDbHPszcr/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Gv.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Carbones y portacarbones<br>Diodos y colectores de alternador</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido inyeccion accesorios">
+                        <div><a href="https://drive.google.com/file/d/1sJdtrxLEl6zH2XeY9_p_vmo9hSUcqpoq/view"  target="_blank"><img src="/images/imagenes/marcas/Indumag.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Bobinas secas y en aceite<br>Módulos de ignición - Bombas Lavaparabrisas</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <img src="/images/imagenes/marcas/JR.png" class="img-responsive lsimg estilosimg pb-4" width="180px">
+                        <h6>Clips y prensas para baterías</h6>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter mecanica">
+                        <div><img src="/images/imagenes/marcas/Kobla.png" class="img-responsive lsimg"></div>
+                        <div><h6>Bombas Diesel y nafta</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><img src="/images/imagenes/marcas/Lc.png" class="img-responsive lsimg estilosimg" width="200px"></div>
+                        <div><h6> Solenoides de arranque, pare de motor<br>Bomba hidráulica y auxiliares</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><a href="https://drive.google.com/file/d/1zM--U3NGYWMwnROPvy2vaGCMkRkMGqaa/view"  target="_blank"><img src="/images/imagenes/marcas/Loctite.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Productos químicos</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido electricidad iluminacion">
+                        <div><a href="https://drive.google.com/file/d/1lsWjsFDrV3nW06d_gpL77jspFQ4dYLBo/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Magneti Marelli.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Alternadores - Lamparas - Distribuidor electrónico<br>Arranques - Bujías incandescentes</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter mecanica accesorios inyeccion">
+                        <div><a href="https://drive.google.com/file/d/1jkFEGS6cXhDFSuO1CQKdSAZU6nyRWCwj/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Md.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Bulbos - Instrumentales - Interruptores<br>Sensores de inyección electronica</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad accesorios">
+                        <div><img src="/images/imagenes/marcas/Mirba.png" class="img-responsive lsimg"></div>
+                        <div><h6>Relays - Llaves varias</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><img src="/images/imagenes/marcas/Moura.png" class="img-responsive lsimg estilosimg" width="200px"></div>
+                        <div><h6>Baterías</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios mecanica">
+                        <div><a href="https://drive.google.com/file/d/18cnUUhykXgQpA1gCg70fAJU4RtHHBrEx/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Nap.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Depósitos recuperadores de agua - Tapas varias</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad inyeccion">
+                        <div><a href="https://drive.google.com/file/d/1Cb_Bo49udiiOjztEBztxW906VhUJwlMs/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Nosso.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Cortacorrientes - Inyectores<br>Motores paso a paso - Plaquetas portadiodos<br>Reguladores de voltaje</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><img src="/images/imagenes/marcas/Ntn.png" class="img-responsive lsimg estilosimg" width="200px"></div>
+                        <div><h6>Rulemanes</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1VwpzZag7v8xBZMbZnAFAUE4Qmdry-WeR/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Omer.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Electroventiladores<br>Paletas de electroventilador - Resistencias</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><a href="https://drive.google.com/file/d/143G8F5q3kykoQdBN3sQI_gz7n1d2vt8z/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Orlan Rober.png" class="img-responsive lsimg pb-3 estilosimg" width="200px"></a></div>
+                        <div><h6>Instrumentales - Escobillas</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1-qUN6U2ehKg_9LuozZkUNDGM85iQPsI0/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Oro.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Fichas y portafusibles - Portalámparas <br>Fusibles - Instalaciones eléctricas</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/Philips.png" class="img-responsive lsimg"></div>
+                        <div><h6>Lamparas</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter mecanica">
+                        <div><img src="/images/imagenes/marcas/Picborg.png" class="img-responsive lsimg"></div>
+                        <div><h6>Filtros de combustibles</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><img src="/images/imagenes/marcas/Plastitrebol.jpeg" class="img-responsive lsimg estilosimg" width="200px"></div>
+                        <div><h6>Cintas de encintar - Spaghetti<br>Corrugados - Caños cristal</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <img src="/images/imagenes/marcas/Portafich.png" class="img-responsive lsimg estilosimg pb-3" width="200px">
+                            <h6>Fichas - Portafusibles<br>Portalámparas - Mazos</h6>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido electricidad">
+                        <div><img src="/images/imagenes/marcas/Prestolite.png" class="img-responsive lsimg"></div>
+                        <div><h6>Cables para bujías</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido electricidad">
+                        <div><a href="https://drive.google.com/file/d/1hqTspTgZC1ofcApxuHceqMjgu9RwGVsR/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Ralux.jpeg" class="img-responsive estilosimg" width="200px"></a></div>
+                        <div><h6>Destelladores - Módulos de ignición <br>Relays - Temporizadores</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido accesorios">
+                        <div><img src="/images/imagenes/marcas/Reimotor.png" class="img-responsive lsimg"></div>
+                        <div><h6>Adaptadores - Alargues de bujías<br>Conexiones para instrumentales<br>Gabinetes de instrumental</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido electricidad">
+                        <div><img src="/images/imagenes/marcas/Rtm.png" class="img-responsive lsimg"></div>
+                        <div><h6>Destelladores - Relays<br> Temporizadores de precalentamiento</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter iluminacion accesorios">
+                        <div><a href="https://drive.google.com/file/d/1-d_T2aI1dhSrDz_hB-l8JT35Q8grokHg/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Solutronic.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Balizas - Lamparas de led<br>Plaquetas electrónicas de led</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><img src="/images/imagenes/marcas/Signers.png" class="img-responsive lsimg estilosimg pb-3" width="200px"></div>
+                        <div><h6>Baterías</h6></div>
+                    </div>   
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido">
+                        <div><img src="/images/imagenes/marcas/Sumdaf.png" class="img-responsive lsimg"></div>
+                        <div><h6>Precintos plásticos</h6></div>
+                    </div>
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><img src="/images/imagenes/marcas/Tamatel.png" class="img-responsive lsimg estilosimg" width="200px"></div>
+                        <div><h6>Alternadores - Arranques<br>Despiece conmutadores de luces<br>Limpiaparabrisas - Interruptores</h6></div>
+                    </div>   
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><a href="https://drive.google.com/file/d/1-XWKzvSBgmW1nMjMu9Z3gh6NO7xg3rwQ/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Trico.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Escobillas de limpiaparabrisas y luneta trasera</h6></div>
+                    </div>  
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/Triler.png" class="img-responsive lsimg pb-2"></div>
+                        <div><h6>Enchufes y accesorios de acoplados</h6></div>
+                    </div>  
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios electricidad inyeccion iluminacion mecanica">
+                        <div><a href="https://drive.google.com/file/d/1U8wSdXxb7H2XCVTR1-TGtMKyOcgT51c_/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Vdo.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Bulbos - Motores paso a paso - Relays<br>Sensores de detonación - Sondas Lambda <br>Sensores de oxigeno</h6></div>
+                    </div>  
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido accesorios electricidad mecanica">
+                        <div><img src="/images/imagenes/marcas/Veypa.png" class="img-responsive lsimg"></div>
+                        <div><h6>Botones de arranque - Llaves varias</h6></div>
+                    </div>  
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido electricidad iluminacion">
+                        <div><a href="https://drive.google.com/file/d/1W4tDY2O-kdPpQ12pX-O1aA9J9kSSERlP/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Vic.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Faros auxiliares - Ópticas - Vidrios de ópticas</h6></div>
+                    </div>  
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter accesorios">
+                        <div><img src="/images/imagenes/marcas/Vini.png" class="img-responsive lsimg"></div>
+                        <div><h6>Cintas aisladora</h6></div>
+                    </div>   
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido accesorios electricidad inyeccion mecanica">
+                        <div><a href="https://drive.google.com/file/d/1aWmQMcjlnuBrXVDor8axow0rjhrpIx1h/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Vuaram.png" class="img-responsive lsimg"></a></div>
+                        <div><h6>Conmutadores de luces y limpiaparabrisas<br>Llaves tecla - Sensores de nivel de combustible</h6></div>
+                    </div>  
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad accesorios">
+                        <div><img src="/images/imagenes/marcas/Wilson Champ.png" class="img-responsive lsimg"></div>
+                        <div><h6>Cargadores y arranques de batería<br> Herramientas de análisis para taller</h6></div>
+                    </div> 
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter encendido electricidad accesorios">
+                        <div><img src="/images/imagenes/marcas/X9.png" class="img-responsive lsimg pb-3"></div>
+                        <div><h6>Bornes de baterías - Cables de instalación<br>Cortacorrientes - Terminales de instalación</h6></div>
+                    </div> 
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1_q7vZNFEGmx_Jwjp6Y9OwUkIIAHcXGTe/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Zen.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Impulsores de arranque</h6></div>
+                    </div>   
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter inyeccion electricidad">
+                        <div><a href="https://drive.google.com/file/d/1LHC0OWUakZG-5arlmK9ffErcszsGYqDd/view?usp=sharing" target="_blank"><img src="/images/imagenes/marcas/Zhz.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Bombas de nafta eléctricas<br>Módulos electrónicos de combustible</h6></div>
+                    </div>  
+                    <div class="gallery_product marco col-lg-3 col-md-4 col-sm-4 col-xs-12 filter electricidad">
+                        <div><a href="https://drive.google.com/file/d/1yHhtXXEj1_XLFpRY1hfS3x2eBaB1Rcry/view?usp=sharing"  target="_blank"><img src="/images/imagenes/marcas/Zm.png" class="img-responsive lsimg pb-3"></a></div>
+                        <div><h6>Alternadores - Arranques<br>Solenoides de arranque</h6></div>
+                    </div>
+                </div>    
+        </div>
+        <!--Fin Productos-->
+
+        <!--Contactenos-->
+        <div class="container-fluid contacto">            		
+            <div class="row">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13136.934567114024!2d-58.45367799999999!3d-34.598253!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x98e4fc30e0e452e2!2sEncendido%20Campomar!5e0!3m2!1ses!2sar!4v1664914187740!5m2!1ses!2sar" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+
+        <!--Pie de pagina-->
+        <footer id="contactenos" class="pie-pagina">
+            <div class="grupo-1 container-fluid">
+                <div class="box">
+                    <figure>
+                        <a href="#">
+                            <img src="./img/logo-footer.png" alt="Logo de Campomar">
+                        </a>
+                    </figure>
+                </div>
+                <div class="box">
+                    <h2>Ventas mayorista</h2>
+                    <p><a href="https://wa.link/yrrqjy" class="box2" target="_blank"><i class="fa fa-whatsapp" aria-hidden="true"></i> 1132140313</a></p>
+                    <p><a href="https://wa.link/hbo057" class="box2" target="_blank"><i class="fa fa-whatsapp" aria-hidden="true"></i> 1158559410</a></p>
+                </div>
+                <div class="box">
+                    <h2>Ventas minorista</h2>
+                    <p><a href="https://walink.co/f0b1a8" class="box2" target="_blank"><i class="fa fa-whatsapp" aria-hidden="true"></i> 1122849850</a></p>
+                    <p><a href="https://walink.co/94d977" class="box2" target="_blank"><i class="fa fa-whatsapp" aria-hidden="true"></i> 1155784862</a></p>
+                    <br/>
+                    <h2>Mercado Libre</h2>
+                    <p><a href="https://walink.co/b3f6b4" class="box2" target="_blank"><i class="fa fa-whatsapp" aria-hidden="true"></i> 1144227511</a></p>
+                </div>
+                <div class="box">
+                    <p>Horario: <br>Lunes a viernes de 8 a 17:45h</p>
+                    <h2 class="pt-4">SEGUINOS</h2>
+                    <div class="red-social">
+                        <a href="https://www.facebook.com/DistribuidoraCampomar/" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href="https://www.instagram.com/distribuidoracampomarsa/" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid encabezado-pie">
+                <div class="row top-nav" style="background-color: #2c5aa0!important;">
+                    <nav class="nav">
+                        <a class="nav-link1" href="tel: 01152632814"><i class="fa fa-phone-square" aria-hidden="true"></i> 01152632814</a>
+                        <p style="color: #fff;">-</p>
+                        <a class="nav-link1" href="https://api.whatsapp.com/send?phone=+541132140313&text=Hola%21%20Quisiera%20m%C3%A1s%20informaci%C3%B3n%20sobre..." target="_blank"><i class="fa fa-whatsapp" aria-hidden="true"></i>  1132140313</a>
+                        <p style="color: #fff;">-</p>
+                        <a target="_blank" class="nav-link1" href="https://goo.gl/maps/LuXrAztyV4FKh3TeA"><i class="fa fa-map-marker" aria-hidden="true"></i> Av. Warnes 1255, CABA</a>
+                        <p style="color: #fff;">-</p>         
+                        <a class="nav-link1" href="mailto:ventas@campomarsa.com.ar" target="_blank"><i class="fa fa-envelope-o" aria-hidden="true"></i> ventas@campomarsa.com.ar</a>
+                    </nav>         
+                </div>
+            </div>
+            <div class="grupo-2">
+                <small>&copy; 2022 <b>Distribuidora Campomar</b> - Todos los Derechos Reservados.</small>
+            </div>
+        </footer>
+        <!--Fin Pie de pagina-->
+
+
+
+
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+        <script src="./js/productos.js"></script>
+        <script src="./js/time-lapse.js"></script>
+    </body>
+</html>
 </html>

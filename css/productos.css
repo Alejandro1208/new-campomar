@@ -1,0 +1,58 @@
+.filter-button {
+    border: 1px solid #2c5aa0 !important;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff !important;
+    margin-bottom: 30px;
+    background-color: #2c5aa0 !important;
+    font-family: 'Raleway', sans-serif !important;
+}
+.filter-button:hover {
+    font-size: 18px;
+    border: 1px solid #2c5aa0 !important;
+    border-radius: 5px;
+    text-align: center;
+    color: #2c5aa0 !important;
+    background-color: #ffffff !important;
+}
+.gallery_product{
+    display: grid;
+    justify-content: center;
+}
+
+#productos{
+    margin-top: 30px;
+    text-align: center;
+    font-size: 50px;
+    color: #2E406E;
+    font-weight: 600;
+    padding: 10px;
+    font-weight: 900;
+}
+.lista{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+h6{
+    text-align: center;
+    font-size: 13px!important;
+    font-family: 'Raleway', sans-serif !important;
+}
+.lista img{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+@media screen and (max-width: 400px){
+    .lista img{
+        margin: auto;
+    }
+    .lista .estilosimg{
+        margin: auto;
+    }
+}

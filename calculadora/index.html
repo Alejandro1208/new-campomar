@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+<div class="container">
+
+    <h1>Calculadora de Descuentos por Pronto Pago</h1>
+
+    <div class="fecha-recibo-section">
+        <h2>Fecha de Pago:</h2>
+        <p class="aclaracion">Ingrese la fecha en la que va a realizar el pago, es decir la entrega de la totalidad de los valores que cancelan la factura.</p>
+        <input type="date" id="fechaPagoTransferencia">
+    </div>
+
+    <div id="facturas">
+        <h2>Cargar Comprobantes / Facturas:</h2>
+        <button id="agregarFactura">
+            <i class="fas fa-receipt"></i>
+            Agregar Comprobante / Factura
+        </button>
+    </div>
+
+    <div id="formasPago">
+        <h2>Formas de Pago:</h2>
+        <button id="agregarFormaPago">
+            <i class="fas fa-dollar-sign"></i>
+            Agregar Forma de Pago
+        </button>
+    </div>
+
+    <!-- Add after the calcular descuento button -->
+    <button id="calcularDescuento">Calcular Descuento</button>
+    <button id="reiniciarCalculadora" class="reiniciar-btn">
+        <i class="fas fa-redo"></i>
+        Reiniciar Calculadora
+    </button>
+
+    <div id="resultados">
+        <h2>Resultados:</h2>
+        <div class="resultado-fila">
+            <p id="promedioDiasDesc1">Promedio Ponderado 1: <span></span> días</p>
+            <p id="promedioDiasDesc2">Promedio Ponderado 2: <span></span> días</p>
+        </div>
+        <div class="resultado-fila">
+            <p id="porcentajeDescuento1">Descuento 1: <span></span></p>
+            <p id="porcentajeDescuento2">Descuento 2: <span></span></p>
+        </div>
+        <p id="porcentajeDescuentoTotal">Porcentaje Descuento Total: <span></span></p>
+        <p id="importeTotalSinDescuento">Importe Total Sin Descuento: <span></span></p>
+        <p id="importeTotalConDescuento">Importe Total Con Descuento: <span></span></p>
+    </div>
+    <details id="instruccionesFechas">
+        <summary>Instrucciones para Cargar las Fechas</summary>    
+        <p><strong>Fechas según forma de pago:</strong>
+            <ul>
+                <li><strong>Efectivo:</strong> colocar fecha de entrega del efectivo.</li>
+                <li><strong>Transferencia:</strong> colocar fecha del comprobante de transferencia.</li>
+                <li><strong>Cheque (físico o electrónico):</strong> colocar fecha de cobro del cheque. ACLARACIÓN: si la fecha de cobro del cheque es anterior al momento del cálculo, debe colocarse la fecha en la que se entrega el cheque.</li>
+                <li><strong>Anticipo en cuenta:</strong> colocar la fecha del anticipo.</li>
+            </ul>
+        </p>
+        <p><strong>Forma de Pago:</strong> Seleccione la forma en que se realizó el pago.</p>
+    </details>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
