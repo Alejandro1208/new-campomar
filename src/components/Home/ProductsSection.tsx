@@ -1,3 +1,5 @@
+// src/components/Home/ProductsSection.tsx (CON EL NUEVO DISEÑO)
+
 import { useState } from 'react';
 import { useProducts, useCategories } from '../../hooks/useData';
 
@@ -22,24 +24,21 @@ export default function ProductsSection() {
   }
 
   return (
-    <section id="productos" className="py-16 bg-gray-50">
+    <section id="productos" className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-primary mb-6">Nuestros Productos</h2>
-          <div className="w-24 h-1 bg-accent mx-auto mb-8"></div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Descubre nuestra amplia gama de productos y marcas de calidad
-          </p>
+          <h2 className="text-4xl font-bold text-primary mb-6">Productos</h2>
+          <div className="w-24 h-1 bg-accent mx-auto"></div>
         </div>
 
         {/* Filtros */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
           <button
             onClick={() => setSelectedCategory(null)}
-            className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+            className={`px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
               selectedCategory === null
-                ? 'bg-primary text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100 shadow-md'
+                ? 'bg-primary text-white shadow-md'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
             Todos
@@ -48,10 +47,10 @@ export default function ProductsSection() {
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+              className={`px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
                 selectedCategory === category.id
-                  ? 'bg-primary text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 shadow-md'
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               {category.name}
@@ -59,40 +58,30 @@ export default function ProductsSection() {
           ))}
         </div>
 
-        {/* Cuadrícula de productos */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* --- NUEVA CUADRÍCULA DE PRODUCTOS --- */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-12">
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group overflow-hidden"
+              className="text-center flex flex-col items-center group"
             >
-              <div className="aspect-square p-6 flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 transition-colors duration-300">
+              <div className="h-24 w-full flex items-center justify-center mb-4">
                 <img
-                  src={product.logo_image_url}
+                  src={`https://alejandrosabater.com.ar${product.logo_image_url}`}
                   alt={product.name}
-                  className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                  className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-primary transition-colors duration-300">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {product.description}
-                </p>
-                {product.category && (
-                  <div className="mt-3">
-                    <span className="inline-block bg-accent text-white text-xs px-3 py-1 rounded-full">
-                      {product.category.name}
-                    </span>
-                  </div>
-                )}
-              </div>
+              <div className="h-px w-1/4 bg-gray-200 my-2"></div>
+              <p className="text-gray-600 text-sm leading-relaxed mt-2">
+                {product.description}
+              </p>
             </div>
           ))}
         </div>
+        {/* --- FIN DE LA NUEVA CUADRÍCULA --- */}
 
-        {filteredProducts.length === 0 && (
+        {filteredProducts.length === 0 && !productsLoading && (
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">
               No se encontraron productos en esta categoría.
