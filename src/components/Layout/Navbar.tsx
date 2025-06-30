@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useSiteSettings } from '../../hooks/useData';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { settings } = useSiteSettings();
 
   const navLinks = [
     { href: '#inicio', label: 'Inicio' },
@@ -26,7 +28,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-primary">CAMPOMAR</h1>
+            <div> {settings.site_logo_url ? ( <img src={`https://alejandrosabater.com.ar${settings.site_logo_url}`} alt="Logo Campomar" className="h-10" /> ) : ( <h1 className="text-2xl font-bold text-primary">CAMPOMAR</h1> )}     </div>
           </div>
 
           {/* Desktop Navigation */}

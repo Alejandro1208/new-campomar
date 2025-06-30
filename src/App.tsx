@@ -5,6 +5,11 @@ import Dashboard from './pages/admin/Dashboard';
 import Categories from './pages/admin/Categories';
 import AdminLayout from './components/admin/AdminLayout';
 import ProtectedRoute from './components/admin/ProtectedRoute';
+import Products from './pages/admin/Products';
+import Banners from './pages/admin/Banners';
+import Settings from './pages/admin/Settings';
+import ContactPhones from './pages/admin/ContactPhones';
+import Company from './pages/admin/Company';
 
 function App() {
   return (
@@ -25,11 +30,14 @@ function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="categories" element={<Categories />} />
-          <Route path="products" element={<div className="text-center py-12"><p className="text-gray-600">Sección de Productos - En desarrollo</p></div>} />
-          <Route path="banners" element={<div className="text-center py-12"><p className="text-gray-600">Sección de Banners - En desarrollo</p></div>} />
+          <Route path="products" element={<Products />} />
+          <Route path="banners" element={<Banners />} />
           <Route path="timeline" element={<div className="text-center py-12"><p className="text-gray-600">Sección de Línea de Tiempo - En desarrollo</p></div>} />
-          <Route path="settings" element={<div className="text-center py-12"><p className="text-gray-600">Sección de Configuraciones - En desarrollo</p></div>} />
-          <Route path="stats" element={<div className="text-center py-12"><p className="text-gray-600">Sección de Estadísticas - En desarrollo</p></div>} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="company" element={<Company />} />
+          <Route path="phones" element={<ContactPhones />} />
+
+
         </Route>
 
         {/* Redirigir rutas no encontradas */}

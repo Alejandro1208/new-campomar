@@ -1,16 +1,21 @@
+// src/pages/admin/Dashboard.tsx (VERSIÓN FINAL)
+
 import { 
   ShoppingBag, 
   Image, 
   Clock, 
   Settings, 
-  BarChart3, 
-  Users,
-  FileText,
-  Tag
+  Tag,
+  Phone,
+  Building2 // Importamos el nuevo ícono
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useDashboardStats } from '../../hooks/useData'; // Importamos el nuevo hook
 
 export default function Dashboard() {
+  const { stats, loading } = useDashboardStats();
+
+  // El array de tarjetas ahora coincide con el menú lateral, sin "Estadísticas"
   const menuItems = [
     {
       title: 'Productos',
@@ -34,6 +39,13 @@ export default function Dashboard() {
       color: 'bg-purple-500 hover:bg-purple-600'
     },
     {
+      title: 'La Empresa',
+      description: 'Editar imágenes y métricas de la sección',
+      icon: Building2,
+      link: '/admin/company',
+      color: 'bg-teal-500 hover:bg-teal-600'
+    },
+    {
       title: 'Línea de Tiempo',
       description: 'Historia de la empresa',
       icon: Clock,
@@ -48,12 +60,19 @@ export default function Dashboard() {
       color: 'bg-gray-500 hover:bg-gray-600'
     },
     {
-      title: 'Estadísticas',
-      description: 'Ver métricas del sitio',
-      icon: BarChart3,
-      link: '/admin/stats',
-      color: 'bg-indigo-500 hover:bg-indigo-600'
-    }
+      title: 'Teléfonos Footer',
+      description: 'Gestionar la lista de teléfonos de contacto',
+      icon: Phone,
+      link: '/admin/phones',
+      color: 'bg-sky-500 hover:bg-sky-600'
+    },
+  ];
+
+  const summaryCards = [
+      { title: 'Total Productos', value: stats.total_products, icon: ShoppingBag, color: 'from-blue-500 to-blue-600', iconColor: 'text-blue-200' },
+      { title: 'Categorías', value: stats.total_categories, icon: Tag, color: 'from-green-500 to-green-600', iconColor: 'text-green-200' },
+      { title: 'Banners', value: stats.total_banners, icon: Image, color: 'from-purple-500 to-purple-600', iconColor: 'text-purple-200' },
+      { title: 'Eventos', value: stats.total_events, icon: Clock, color: 'from-orange-500 to-orange-600', iconColor: 'text-orange-200' }
   ];
 
   return (
@@ -86,46 +105,18 @@ export default function Dashboard() {
       </div>
 
       {/* Resumen rápido */}
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-2xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-blue-100 text-sm">Total Productos</p>
-              <p className="text-2xl font-bold">--</p>
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {summaryCards.map(card => (
+            <div key={card.title} className={`bg-gradient-to-r ${card.color} text-white p-6 rounded-2xl`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm">{card.title}</p>
+                  <p className="text-3xl font-bold">{loading ? '...' : card.value}</p>
+                </div>
+                <card.icon size={32} className={card.iconColor} />
+              </div>
             </div>
-            <ShoppingBag size={32} className="text-blue-200" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-2xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-green-100 text-sm">Categorías</p>
-              <p className="text-2xl font-bold">--</p>
-            </div>
-            <Tag size={32} className="text-green-200" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-2xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-100 text-sm">Banners</p>
-              <p className="text-2xl font-bold">--</p>
-            </div>
-            <Image size={32} className="text-purple-200" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-2xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-orange-100 text-sm">Eventos</p>
-              <p className="text-2xl font-bold">--</p>
-            </div>
-            <Clock size={32} className="text-orange-200" />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

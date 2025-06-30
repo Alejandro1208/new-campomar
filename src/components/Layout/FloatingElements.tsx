@@ -35,7 +35,7 @@ export default function FloatingElements() {
           <Instagram size={20} />
         </a>
         <a
-          href="#"
+          href={settings.youtube_url || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className="block p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-300"
