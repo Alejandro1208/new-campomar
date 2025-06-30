@@ -10,6 +10,7 @@ import Banners from './pages/admin/Banners';
 import Settings from './pages/admin/Settings';
 import ContactPhones from './pages/admin/ContactPhones';
 import Company from './pages/admin/Company';
+import Timeline from './pages/admin/Timeline';
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
           <Route path="categories" element={<Categories />} />
           <Route path="products" element={<Products />} />
           <Route path="banners" element={<Banners />} />
-          <Route path="timeline" element={<div className="text-center py-12"><p className="text-gray-600">Sección de Línea de Tiempo - En desarrollo</p></div>} />
+          <Route path="timeline" element={<Timeline />} />
           <Route path="settings" element={<Settings />} />
           <Route path="company" element={<Company />} />
           <Route path="phones" element={<ContactPhones />} />
